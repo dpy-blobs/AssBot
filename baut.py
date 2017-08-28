@@ -9,8 +9,16 @@ async def cyc():
     for member in cycle(guild.members):
         await guild.me.edit(nick=member.name.upper())
         await asyncio.sleep(5)
-@commands.command(name='eval')
-async def _eval(self, ctx, *, body: str):
+def cleanup_code(content):
+    if content.startswith('```') and content.endswith('```'):
+        return '\n'.join(content.split('\n')[1:-1])
+    return content.strip('` \n')
+def get_syntax_error(e):
+    if e.text is None:
+        return f'```py\n{e.__class__.__name__}: {e}\n```'
+    return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
+@bot.command(name='eval')
+async def _eval(ctx, *, body: str):
     """Evaluates code."""
     env = {
         'bot': ctx.bot,
@@ -19,12 +27,12 @@ async def _eval(self, ctx, *, body: str):
         'author': ctx.author,
         'guild': ctx.guild,
         'message': ctx.message,
-        '_': self._last_result
+        '_': bot._last_result
     }
 
     env.update(globals())
 
-    body = self.cleanup_code(body)
+    body = cleanup_code(body)
     stdout = io.StringIO()
 
     code = textwrap.indent(body, '  ')
@@ -33,7 +41,7 @@ async def _eval(self, ctx, *, body: str):
     try:
         exec(to_compile, env)
     except SyntaxError as e:
-        return await ctx.send(self.get_syntax_error(e))
+        return await ctx.send(get_syntax_error(e))
 
     func = env['func']
     try:
@@ -53,7 +61,7 @@ async def _eval(self, ctx, *, body: str):
             if value:
                 await ctx.send(f'​`​`​`py\n{value}\n​`​`​`')
         else:
-            self._last_result = ret
+            bot._last_result = ret
             await ctx.send(f'​`​`​`py\n{value}{ret}\n​`​`​`')
 bot.loop.create_task(cyc())
 bot.run("MjU0NjE1MTA4NTE5NDYwODY1.DIWGmw.BDtt1fYwK0Bx5U0BAwmqdSYZ9aA")
