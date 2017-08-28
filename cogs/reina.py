@@ -1,4 +1,6 @@
 import io
+import inspect
+import textwrap
 
 import discord
 from discord.ext import commands
