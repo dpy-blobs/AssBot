@@ -11,6 +11,7 @@ from contextlib import redirect_stdout
 class Admin:
     def __init__(self, bot):
         self.bot = bot
+        self.bot._last_result = None
 
     
     def cleanup_code(self, content):
