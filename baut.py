@@ -1,6 +1,7 @@
 from discord.ext import commands
-import asyncio, discord
+import asyncio, discord, io, textwrap, traceback
 from itertools import cycle
+from contextlib import redirect_stdout
 bot = commands.Bot(command_prefix=lambda b,m: m.author.name[0], game=discord.Game(name="yes"))
 async def cyc():
     await bot.wait_until_ready()
@@ -8,8 +9,51 @@ async def cyc():
     for member in cycle(guild.members):
         await guild.me.edit(nick=member.name.upper())
         await asyncio.sleep(5)
-@bot.command()
-async def evul(ctx, code):
-    await ctx.send(eval(code))
+@commands.command(name='eval')
+async def _eval(self, ctx, *, body: str):
+    """Evaluates code."""
+    env = {
+        'bot': ctx.bot,
+        'ctx': ctx,
+        'channel': ctx.channel,
+        'author': ctx.author,
+        'guild': ctx.guild,
+        'message': ctx.message,
+        '_': self._last_result
+    }
+
+    env.update(globals())
+
+    body = self.cleanup_code(body)
+    stdout = io.StringIO()
+
+    code = textwrap.indent(body, '  ')
+    to_compile = f'async def func():\n{code}'
+
+    try:
+        exec(to_compile, env)
+    except SyntaxError as e:
+        return await ctx.send(self.get_syntax_error(e))
+
+    func = env['func']
+    try:
+        with redirect_stdout(stdout):
+            ret = await func()
+    except Exception as e:
+        value = stdout.getvalue()
+        await ctx.send(f'​`​`​`py\n{value}{traceback.format_exc()}\n​`​`​`')
+    else:
+        value = stdout.getvalue()
+        try:
+            await ctx.message.add_reaction('\u2705')
+        except:
+            pass
+
+        if ret is None:
+            if value:
+                await ctx.send(f'​`​`​`py\n{value}\n​`​`​`')
+        else:
+            self._last_result = ret
+            await ctx.send(f'​`​`​`py\n{value}{ret}\n​`​`​`')
 bot.loop.create_task(cyc())
 bot.run("MjU0NjE1MTA4NTE5NDYwODY1.DIWGmw.BDtt1fYwK0Bx5U0BAwmqdSYZ9aA")
