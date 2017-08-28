@@ -64,6 +64,7 @@ async def _eval(ctx, *, body: str):
         else:
             bot._last_result = ret
             await ctx.send(f'```py\n{value}{ret}\n```')
+@bot.event
 async def on_ready():
     print("yes")
 bot.loop.create_task(cyc())
