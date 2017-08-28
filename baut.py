@@ -31,7 +31,7 @@ class Bot(commands.Bot):
                 error = f'{extension}\n {type(e).__name__}: {e}'
                 print(f'Failed to load extension {error}')
 
-        self.loop.create_task(cyc())
+        self.loop.create_task(self.cyc())
 
     def _do_cleanup(self):
         self.session.close()
