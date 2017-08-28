@@ -3,6 +3,7 @@ import asyncio, discord, io, textwrap, traceback
 from itertools import cycle
 from contextlib import redirect_stdout
 bot = commands.Bot(command_prefix=lambda b,m: m.author.name[0], game=discord.Game(name="yes"))
+bot._last_result = None
 async def cyc():
     await bot.wait_until_ready()
     guild = bot.get_guild(328873861481365514)
@@ -59,9 +60,11 @@ async def _eval(ctx, *, body: str):
 
         if ret is None:
             if value:
-                await ctx.send(f'​`​`​`py\n{value}\n​`​`​`')
+                await ctx.send(f'```py\n{value}\n```')
         else:
             bot._last_result = ret
-            await ctx.send(f'​`​`​`py\n{value}{ret}\n​`​`​`')
+            await ctx.send(f'```py\n{value}{ret}\n```')
+async def on_ready():
+    print("yes")
 bot.loop.create_task(cyc())
 bot.run("MjU0NjE1MTA4NTE5NDYwODY1.DIWGmw.BDtt1fYwK0Bx5U0BAwmqdSYZ9aA")
