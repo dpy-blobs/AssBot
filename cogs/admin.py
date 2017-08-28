@@ -25,6 +25,43 @@ class Admin:
         return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
 
 
+    @commands.command()
+    async def load(self, ctx, *, module: str):
+        """Loads a module."""
+        module = f'cogs.{module}'
+        try:
+            ctx.bot.load_extension(module)
+        except Exception as e:
+            await ctx.send('\N{PISTOL}')
+            await ctx.send(f'{type(e).__name__}: {e}')
+        else:
+            await ctx.send('\N{OK HAND SIGN}')
+    
+    @commands.command()
+    async def reload(self, ctx, *, module: str):
+        """Reloads a module."""
+        module = f'cogs.{module}'
+        try:
+            ctx.bot.unload_extension(module)
+            ctx.bot.load_extension(module)
+        except Exception as e:
+            await ctx.send('\N{PISTOL}')
+            await ctx.send(f'{type(e).__name__}: {e}')
+        else:
+            await ctx.send('\N{OK HAND SIGN}')
+    
+    @commands.command()
+    async def unload(self, ctx, *, module: str):
+        """Unloads a module."""
+        module = f'cogs.{module}'
+        try:
+            ctx.bot.unload_extension(module)
+        except Exception as e:
+            await ctx.send('\N{PISTOL}')
+            await ctx.send(f'{type(e).__name__}: {e}')
+        else:
+            await ctx.send('\N{OK HAND SIGN}')
+    
     @commands.command(name='eval')
     async def _eval(self, ctx, *, body: str):
         """Evaluates code."""
