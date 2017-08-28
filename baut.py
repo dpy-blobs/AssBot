@@ -1,23 +1,32 @@
+import io
+import textwrap
+import traceback
+import asyncio
+import discord
 from discord.ext import commands
-import asyncio, discord, io, textwrap, traceback
 from itertools import cycle
 from contextlib import redirect_stdout
+
 bot = commands.Bot(command_prefix=lambda b,m: m.author.name[0], game=discord.Game(name="yes"))
 bot._last_result = None
+
 async def cyc():
     await bot.wait_until_ready()
     guild = bot.get_guild(328873861481365514)
     for member in cycle(guild.members):
         await guild.me.edit(nick=member.name.upper())
         await asyncio.sleep(5)
+
 def cleanup_code(content):
     if content.startswith('```') and content.endswith('```'):
         return '\n'.join(content.split('\n')[1:-1])
     return content.strip('` \n')
+
 def get_syntax_error(e):
     if e.text is None:
         return f'```py\n{e.__class__.__name__}: {e}\n```'
     return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
+
 @bot.command(name='eval')
 async def _eval(ctx, *, body: str):
     """Evaluates code."""
@@ -64,8 +73,10 @@ async def _eval(ctx, *, body: str):
         else:
             bot._last_result = ret
             await ctx.send(f'```py\n{value}{ret}\n```')
+
 @bot.event
 async def on_ready():
     print("yes")
+
 bot.loop.create_task(cyc())
 bot.run("MjU0NjE1MTA4NTE5NDYwODY1.DIWGmw.BDtt1fYwK0Bx5U0BAwmqdSYZ9aA")
