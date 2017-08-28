@@ -21,6 +21,24 @@ class Reina:
             await ctx.send(file=discord.File(io.BytesIO(await r.read()),
                            filename))
 
+    @commands.command()
+    async def source(self, ctx, *, command: str):
+        """Posts the source code of a command."""
+
+        cmd = ctx.bot.get_command(command)
+        if cmd is None:
+            return await ctx.send(f'Command {command} not found.')
+
+        code = inspect.getsource(cmd.callback)
+        code = textwrap.dedent(code).replace('`', '\u200b​`')
+
+        p = commands.Paginator(prefix='```py')
+        for line in code.split('\n'):
+            p.add_line(line)
+
+        for page in p.pages:
+            await ctx.send(page)
+
 
 def setup(bot):
     bot.add_cog(Reina())
