@@ -8,9 +8,9 @@ class Synder:
 
     @commands.command(aliases=["c"])
     async def choose(self, ctx, *, choices):
-        f"""
-        Chooses between a number of options
-        Syntax = {ctx.prefix}choose option 1 | option 2 | option 3 | option 4
+        """Chooses between a number of options
+
+        Seperate choices with "|" to denote seperate options.
         """
         parsed_choices = [choice.strip() for choice in choices.split("|")]
         await ctx.send(random.choice(parsed_choices))
