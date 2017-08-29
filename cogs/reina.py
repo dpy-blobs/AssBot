@@ -2,11 +2,29 @@ import io
 import inspect
 import textwrap
 
+import psutil
 import discord
 from discord.ext import commands
 
 
 class Reina:
+    def __init__(self):
+        self.process = psutil.Process()
+
+    @commands.command()
+    async def memory(self, ctx):
+        """Shows the bot's memory usage."""
+
+        memory_usage = self.process.memory_full_info().uss / 1024**2
+        await ctx.send(f'Memory Usage: **{memory_usage:.2f} MiB'**)
+
+    @commands.command()
+    async def cpu(self, ctx):
+        """Shows the bot's cpu usage."""
+
+        cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
+        await ctx.send(f'CPU Usage: **{cpu_usage}%**')
+
     @commands.command()
     async def avatar(self, ctx, *, member: discord.Member = None):
         """Posts a member's avatar."""
