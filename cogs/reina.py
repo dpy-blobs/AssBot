@@ -1,15 +1,63 @@
 import io
 import inspect
 import textwrap
+import datetime
 
 import psutil
 import discord
 from discord.ext import commands
 
 
+class Plural:
+    def __init__(self, **attr):
+        iterator = attr.items()
+        self.name, self.value = next(iter(iterator))
+
+    def __str__(self):
+        v = self.value
+        n = self.name
+        fmt = f'{v} {n}'
+        if v != 1:
+            fmt += 's'
+        return fmt
+
+
+def human_time(seconds):
+    seconds = int(seconds)
+    if seconds == 0:
+        return '0 seconds'
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    days, hours = divmod(hours, 24)
+    years, days = divmod(days, 365)
+
+    time = []
+    if years:
+        time.append(f'{Plural(year=years)}')
+    if days:
+        time.append(f'{Plural(day=days)}')
+    if hours:
+        time.append(f'{Plural(hour=hours)}')
+    if minutes:
+        time.append(f'{Plural(minute=minutes)}')
+    if seconds:
+        time.append(f'{Plural(second=seconds)}')
+
+    if len(time) > 2:
+        return '{}, and {}'.format(', '.join(time[:-1]), time[-1])
+    return ' and '.join(time)
+
+
 class Reina:
     def __init__(self):
         self.process = psutil.Process()
+
+    @commands.command()
+    async def uptime(self, ctx):
+        """Shows the bot's uptime."""
+
+        delta = datetime.datetime.utcnow() - ctx.bot.start_time
+        await ctx.send(f'Uptime: **{human_time(delta.total_seconds()}**.
 
     @commands.command()
     async def memory(self, ctx):
