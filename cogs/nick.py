@@ -36,6 +36,21 @@ class Nick:
         ws = self.bot.latency * 1000
         await msg.edit(content=f'Pong! \n RTT - {rtt:.3f}ms \n WS - {ws:.3f}ms')
 
+	@commands.command()
+	async def merge(self, ctx, pr_number):
+		pass
+		'''WIP AHHHH
+		data = {"username": "",
+				"password": "",
+				"commit_title": "Merged by {}".format(ctx.author),
+				"commit_message": "Merged from command",}
+     	resp = await ctx.session.put('https://api.github.com/repos/dpy-blobs/AssBot/pulls/{}/merge'.format(pr_number), data=data)
+		if resp == 200:
+			await self.bot.say("PR #{} | Successfully Merged".format(pr_number))
+		else:
+			await self.bot.say("PR #{} | Merge Unsuccessful".format(pr_number))
+		'''
+
 def setup(bot):
 	bot.add_cog(Nick(bot))
 	
