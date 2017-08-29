@@ -34,7 +34,6 @@ class Nick:
         after = time.perf_counter()
         rtt = (after - before) * 1000
         ws = self.bot.latency * 1000
-
         await msg.edit(content=f'Pong! \n RTT - {rtt:.3f}ms \n WS - {ws:.3f}ms')
 
 def setup(bot):
