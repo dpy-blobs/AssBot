@@ -9,7 +9,7 @@ from PIL import ImageFont
 
 class Nick:
 
-	nick_resources = os.path.join(os.pardir, "\\cog_resources\\nick")
+	nick_resources = os.path.join(os.pardir, "cog_resources/nick")
 
 	def __init__(self, bot):
 		self.bot = bot
