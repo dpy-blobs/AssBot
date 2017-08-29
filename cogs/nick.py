@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import os
+import time
 from io import BytesIO
 from PIL import Image
 from PIL import ImageDraw
@@ -25,6 +26,16 @@ class Nick:
 		img.save(bytesio, "png")
 		bytesio.seek(0)
 		await self.bot.upload(fp=image, filename="{}.png".format(name))
+	
+	@commands.command()
+	async def ping(self, ctx):
+        before = time.perf_counter()
+        msg = await ctx.send('...')
+        after = time.perf_counter()
+        rtt = (after - before) * 1000
+        ws = self.bot.latency * 1000
+
+        await msg.edit(content=f'Pong! \n RTT - {rtt:.3f}ms \n WS - {ws:.3f}ms')
 
 def setup(bot):
 	bot.add_cog(Nick(bot))
