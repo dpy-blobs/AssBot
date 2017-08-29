@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import os
+import time
 from io import BytesIO
 from PIL import Image
 from PIL import ImageDraw
@@ -13,6 +14,7 @@ class Nick:
 
 	@commands.command()
 	async def tzone(self, name):
+		'''You unlock this door with the key of imagination'''
 		name = name.upper()
 		img_w, img_h = (1280, 900)
 		img = Image.open("cog_resources/nick/twilightzone.png")
@@ -24,6 +26,30 @@ class Nick:
 		img.save(bytesio, "png")
 		bytesio.seek(0)
 		await self.bot.upload(fp=image, filename="{}.png".format(name))
+	
+	@commands.command()
+	async def ping(self, ctx):
+        before = time.perf_counter()
+        msg = await ctx.send('...')
+        after = time.perf_counter()
+        rtt = (after - before) * 1000
+        ws = self.bot.latency * 1000
+        await msg.edit(content=f'Pong! \n RTT - {rtt:.3f}ms \n WS - {ws:.3f}ms')
+
+	@commands.command()
+	async def merge(self, ctx, pr_number):
+		pass
+		'''WIP AHHHH
+		data = {"username": "",
+				"password": "",
+				"commit_title": "Merged by {}".format(ctx.author),
+				"commit_message": "Merged from command",}
+     	resp = await ctx.session.put('https://api.github.com/repos/dpy-blobs/AssBot/pulls/{}/merge'.format(pr_number), data=data)
+		if resp == 200:
+			await self.bot.say("PR #{} | Successfully Merged".format(pr_number))
+		else:
+			await self.bot.say("PR #{} | Merge Unsuccessful".format(pr_number))
+		'''
 
 def setup(bot):
 	bot.add_cog(Nick(bot))
