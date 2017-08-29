@@ -13,7 +13,22 @@ class Admin:
         self.bot = bot
         self.bot._last_result = None
 
-    
+
+    @commands.command()
+    async def setavatar(self, ctx, link: str):
+        """Sets the bot's avatar."""
+
+        async with ctx.session.get(link) as r:
+            if r.status == 200:
+                try:
+                    await ctx.bot.user.edit(avatar=await r.read())
+                except Exception as e:
+                    await ctx.send(e)
+                else:
+                    await ctx.send('Avatar set.')
+            else:
+                await ctx.send('Unable to download image.')
+
     def cleanup_code(self, content):
         if content.startswith('```') and content.endswith('```'):
             return '\n'.join(content.split('\n')[1:-1])
