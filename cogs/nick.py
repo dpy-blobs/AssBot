@@ -16,6 +16,7 @@ class Nick:
 
 	@commands.command()
 	async def tzone(self, name):
+		name = name.upper()
 		img_w, img_h = (1280, 900)
 		img = Image.open(os.path.join(self.nick_resources, "twilightzone.png"))
 		font = ImageFont.truetype(os.path.join(self.nick_resources, "twilightzone.ttf"), 200)
