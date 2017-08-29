@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 from pathlib import Path
 from itertools import cycle
 
@@ -32,6 +33,11 @@ class Bot(commands.Bot):
                 print(f'Failed to load extension {error}')
 
         self.loop.create_task(self.cyc())
+        self.loop.create_task(self.init())
+
+    async def init(self):
+        await self.wait_until_ready()
+        self.start_time = datetime.datetime.utcnow()
 
     def _do_cleanup(self):
         self.session.close()
