@@ -8,7 +8,7 @@ from PIL import ImageFont
 
 class Nick:
 
-	nick_resources = os.join(os.pardir, "\\cog_resources\\nick")
+	nick_resources = os.path.join(os.pardir, "\\cog_resources\\nick")
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -16,8 +16,8 @@ class Nick:
 	@commands.command()
 	async def tzone(self, name):
 		img_w, img_h = (1280, 900)
-		img = Image.open(os.join(self.nick_resources, "twilightzone.png"))
-		font = ImageFont.truetype(os.join(self.nick_resources, "twilightzone.ttf"), 200)
+		img = Image.open(os.path.join(self.nick_resources, "twilightzone.png"))
+		font = ImageFont.truetype(os.path.join(self.nick_resources, "twilightzone.ttf"), 200)
 		draw = ImageDraw.Draw(img)
 		t_w, t_h = draw.textsize(name, font)
 		draw.text(((img_w - t_w) / 2, (img_h - t_h) / 2), name, (192,192,192), font=font)
