@@ -13,6 +13,7 @@ class Nick:
 
 	@commands.command()
 	async def tzone(self, name):
+		'''You unlock this door with the key of imagination'''
 		name = name.upper()
 		img_w, img_h = (1280, 900)
 		img = Image.open("cog_resources/nick/twilightzone.png")
