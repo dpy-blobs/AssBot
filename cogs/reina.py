@@ -8,40 +8,30 @@ import discord
 from discord.ext import commands
 
 
-class Plural:
-    def __init__(self, **attr):
-        iterator = attr.items()
-        self.name, self.value = next(iter(iterator))
-
-    def __str__(self):
-        v = self.value
-        n = self.name
-        fmt = f'{v} {n}'
-        if v != 1:
-            fmt += 's'
-        return fmt
-
-
 def human_time(seconds):
     seconds = int(seconds)
     if seconds == 0:
         return '0 seconds'
+
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     days, hours = divmod(hours, 24)
     years, days = divmod(days, 365)
 
-    time = []
-    if years:
-        time.append(f'{Plural(year=years)}')
-    if days:
-        time.append(f'{Plural(day=days)}')
-    if hours:
-        time.append(f'{Plural(hour=hours)}')
-    if minutes:
-        time.append(f'{Plural(minute=minutes)}')
-    if seconds:
-        time.append(f'{Plural(second=seconds)}')
+    time_units = {
+        'year': years,
+        'day': days,
+        'hour': hours,
+        'minute': minutes,
+        'second': seconds
+    }
+
+    def _plural(name, value):
+        if value != 1:
+            name += 's'
+        return f'{value} {name}'
+
+    time = [_plural(key, value) for key, value in time_units.items()]
 
     if len(time) > 2:
         return '{}, and {}'.format(', '.join(time[:-1]), time[-1])
