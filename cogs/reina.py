@@ -1,15 +1,36 @@
 import io
 import inspect
 import textwrap
+import functools
 
 import psutil
 import discord
 from discord.ext import commands
+import youtube_dl
 
 
 class Reina:
     def __init__(self):
         self.process = psutil.Process()
+        opts = {
+            'default_search': 'auto',
+            'quiet': True
+        }
+        self.ytdl = youtube_dl.YoutubeDL(opts)
+
+    @commands.command()
+    async def youtube(self, ctx, *, query: str):
+        """Searches YouTube and gives you the first result."""
+
+        func = functools.partial(self.ytdl.extract_info, query, download=False)
+        try:
+            info = await ctx.bot.loop.run_in_executor(None, func)
+        except youtube_dl.DownloadError:
+            await ctx.send('Video not found.')
+        else:
+            if 'entries' in info:
+                info = info['entries'][0]
+            await ctx.send(info.get('webpage_url'))
 
     @commands.command()
     async def uptime(self, ctx):
