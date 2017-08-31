@@ -4,6 +4,7 @@ import traceback
 from discord.ext import commands
 from contextlib import redirect_stdout
 import threading
+import os
 
 
 class Admin:
