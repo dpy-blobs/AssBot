@@ -4,7 +4,7 @@ import discord.ext
 
 
 class AssBaseException:
-    """Base exception for Class for AssBot."""
+    """Base exception Class for AssBot."""
     pass
 
 
