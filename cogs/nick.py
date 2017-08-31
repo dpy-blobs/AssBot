@@ -8,6 +8,7 @@ import functools
 import time
 import xml.etree as et
 import asyncio
+import aiohttp
 
 
 class Nick:
