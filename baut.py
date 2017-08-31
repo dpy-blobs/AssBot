@@ -59,7 +59,8 @@ class Bot(commands.Bot):
         await self.wait_until_ready()
         await asyncio.sleep(3)
         guild = self.blob_guild
-        for member in cycle(guild.members):
+        contrib_role = discord.utils.get(guild.roles, id=352849291733237771)
+        for member in cycle(contrib_role.members):
             await guild.me.edit(nick=member.name.upper())
             await asyncio.sleep(5)
 
