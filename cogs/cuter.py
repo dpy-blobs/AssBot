@@ -34,9 +34,9 @@ class Cute:
         buffer = BytesIO()
         base.save(buffer, 'png')
         buffer.seek(0)
+        print("I REALLY HOPE THIS WORKS")
         return discord.File(buffer, filename='quilt.png')
-        
-
+        #hope it works yo
 
 def setup(bot):
     bot.add_cog(Cute())
