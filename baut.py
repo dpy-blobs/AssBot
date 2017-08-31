@@ -1,3 +1,4 @@
+import os
 import asyncio
 import datetime
 from pathlib import Path
@@ -63,4 +64,5 @@ class Bot(commands.Bot):
 
 if __name__ == '__main__':
     bot = Bot()
-    bot.run("MjU0NjE1MTA4NTE5NDYwODY1.DIWGmw.BDtt1fYwK0Bx5U0BAwmqdSYZ9aA")
+    token = os.environ["TOKEN"]
+    bot.run(token)
