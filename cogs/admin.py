@@ -129,19 +129,21 @@ class Admin:
     @commands.command()
     async def gitmerge(self, ctx, pr_number):
         if ctx.author.id == 111158853839654912:
+            gh_token = os.environ['GH_TOKEN']
             url = f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge'
             
             data = {'commit_title': f'Merged by {ctx.author}', 
                     'commit_message': 'Merged from command'}
             
-            headers = {'Content-Type':'application/json',
-                       'Authorization': f"token {os.environ['GH_TOKEN']}"}
+            headers = {'Content-Type': 'application/json',
+                       'Authorization': f"token {gh_token}"}
             
             async with ctx.session.put(url, data=json.dumps(data), headers=headers) as resp:
                 if resp.status == 200:
                     await ctx.send(f"PR #{pr_number} | Successfully Merged")
                 else:
-                    await ctx.send(f"PR #{pr_number} | Merge Unsuccessful\nMessage: {await resp.json()}\nStatus: {resp.status}")
+                    body = await resp.json()
+                    await ctx.send(f"PR #{pr_number} | Merge Unsuccessful\nMessage: {body}\nStatus: {resp.status}")
         else:
             await ctx.send("You aren't Synder ლ(ಠ益ಠლ)")
 
