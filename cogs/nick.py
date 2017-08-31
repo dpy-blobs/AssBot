@@ -1,14 +1,15 @@
+import asyncio
+import random
+import time
+import functools
+import xml.etree as et
+from io import BytesIO
+import aiohttp
 import discord
 from discord.ext import commands
-from io import BytesIO
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-import functools
-import time
-import xml.etree as et
-import asyncio
-import aiohttp
 
 
 class Nick:
