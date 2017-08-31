@@ -128,17 +128,17 @@ class Admin:
     async def gitmerge(self, ctx, pr_number):
         pass
         '''Soon™
-        data = {"username": "",
-                "password": "",
-                "commit_title": "Merged by {}".format(ctx.author),
-                "commit_message": "Merged from command",}
-        resp = await ctx.session.put('https://api.github.com/repos/dpy-blobs/AssBot/pulls/{}/merge'.format(pr_number),
-         data=data)
+        auth = {"username": "",
+                "password": ""}
+        data = {"commit_title": f"Merged by {ctx.author}",
+                "commit_message": "Merged from command"}
+        resp = await ctx.session.put(f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge', auth=auth, data=data)
         if resp == 200:
             await ctx.send(f"PR #{pr_number} | Successfully Merged")
         else:
             await ctx.send(f"PR #{pr_number} | Merge Unsuccessful")
         '''
+
 
     @commands.command(name='threads', hidden=True)
     async def thread_counter(self, ctx):
