@@ -3,6 +3,11 @@ import sys
 import discord.ext
 
 
+class AssBaseException:
+    """Base exception Class for AssBot."""
+    pass
+
+
 class CommandErrorHandler:
     def __init__(self, bot):
         self.bot = bot
@@ -38,11 +43,11 @@ class CommandErrorHandler:
                 return
 
         if isinstance(error, discord.ext.commands.BadArgument):
-            if ctx.command.qualified_name == 'tag list':
-                return await ctx.send('I could not find that member. Please try again.')
+            return
 
         print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
 
 def setup(bot):
     bot.add_cog(CommandErrorHandler(bot))

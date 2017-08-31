@@ -22,7 +22,7 @@ class Reina:
         """Shows the bot's memory usage."""
 
         memory_usage = self.process.memory_full_info().uss / 1024**2
-        await ctx.send(f'Memory Usage: **{memory_usage:.2f} MiB'**)
+        await ctx.send(f'Memory Usage: **{memory_usage:.2f} MiB**')
 
     @commands.command()
     async def cpu(self, ctx):
@@ -32,7 +32,7 @@ class Reina:
         await ctx.send(f'CPU Usage: **{cpu_usage}%**')
 
     @commands.command()
-    async def avatar(self, ctx, *, member: discord.Member = None):
+    async def avatar(self, ctx, *, member: discord.Member=None):
         """Posts a member's avatar."""
 
         member = member or ctx.author
@@ -45,7 +45,7 @@ class Reina:
             filetype = r.headers.get('Content-Type').split('/')[1]
             filename = f'{member.name}.{filetype}'
             await ctx.send(file=discord.File(io.BytesIO(await r.read()),
-                           filename))
+                                             filename))
 
     @commands.command()
     async def source(self, ctx, *, command: str):

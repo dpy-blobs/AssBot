@@ -1,11 +1,9 @@
 import io
 import textwrap
 import traceback
-import asyncio
-import discord
 from discord.ext import commands
-from itertools import cycle
 from contextlib import redirect_stdout
+import threading
 
 
 class Admin:
@@ -13,7 +11,24 @@ class Admin:
         self.bot = bot
         self.bot._last_result = None
 
-    
+    async def __local_check(self, ctx):
+        return ctx.author in self.bot.blob_guild.members
+
+    @commands.command()
+    async def setavatar(self, ctx, link: str):
+        """Sets the bot's avatar."""
+
+        async with ctx.session.get(link) as r:
+            if r.status == 200:
+                try:
+                    await ctx.bot.user.edit(avatar=await r.read())
+                except Exception as e:
+                    await ctx.send(e)
+                else:
+                    await ctx.send('Avatar set.')
+            else:
+                await ctx.send('Unable to download image.')
+
     def cleanup_code(self, content):
         if content.startswith('```') and content.endswith('```'):
             return '\n'.join(content.split('\n')[1:-1])
@@ -23,7 +38,6 @@ class Admin:
         if e.text is None:
             return f'```py\n{e.__class__.__name__}: {e}\n```'
         return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
-
 
     @commands.command()
     async def load(self, ctx, *, module: str):
@@ -72,7 +86,8 @@ class Admin:
             'author': ctx.author,
             'guild': ctx.guild,
             'message': ctx.message,
-            '_': self.bot._last_result
+            '_': self.bot._last_result,
+            'kkk': 'Racist!'
         }
 
         env.update(globals())
@@ -98,7 +113,7 @@ class Admin:
         else:
             value = stdout.getvalue()
             try:
-                await ctx.message.add_reaction('\u2705')
+                await ctx.message.add_reaction('🍡')
             except:
                 pass
 
@@ -109,6 +124,26 @@ class Admin:
                 self.bot._last_result = ret
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
+    @commands.command()
+    async def gitmerge(self, ctx, pr_number):
+        pass
+        '''Soon™
+        data = {"username": "",
+                "password": "",
+                "commit_title": "Merged by {}".format(ctx.author),
+                "commit_message": "Merged from command",}
+        resp = await ctx.session.put('https://api.github.com/repos/dpy-blobs/AssBot/pulls/{}/merge'.format(pr_number),
+         data=data)
+        if resp == 200:
+            await ctx.send(f"PR #{pr_number} | Successfully Merged")
+        else:
+            await ctx.send(f"PR #{pr_number} | Merge Unsuccessful")
+        '''
 
+    @commands.command(name='threads', hidden=True)
+    async def thread_counter(self, ctx):
+        await ctx.send(len(threading.enumerate()))
+
+        
 def setup(bot):
     bot.add_cog(Admin(bot))

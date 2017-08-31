@@ -1,3 +1,4 @@
+import os
 import asyncio
 import datetime
 from pathlib import Path
@@ -51,6 +52,7 @@ class Bot(commands.Bot):
         super()._do_cleanup()
 
     async def on_ready(self):
+        self.blob_guild = self.get_guild(328873861481365514)
         print(f'Logged in as {self.user}')
         print('-------------')
 
@@ -62,12 +64,15 @@ class Bot(commands.Bot):
 
     async def cyc(self):
         await self.wait_until_ready()
-        guild = self.get_guild(328873861481365514)
-        for member in cycle(guild.members):
+        await asyncio.sleep(3)
+        guild = self.blob_guild
+        contrib_role = discord.utils.get(guild.roles, id=352849291733237771)
+        for member in cycle(contrib_role.members):
             await guild.me.edit(nick=member.name.upper())
             await asyncio.sleep(5)
 
 
 if __name__ == '__main__':
     bot = Bot()
-    bot.run("MjU0NjE1MTA4NTE5NDYwODY1.DIWGmw.BDtt1fYwK0Bx5U0BAwmqdSYZ9aA")
+    token = os.environ["TOKEN"]
+    bot.run(token)
