@@ -13,8 +13,13 @@ class Admin:
         self.bot = bot
         self.bot._last_result = None
 
+    def is_blobian(self):
+        def predicate(ctx):
+            return ctx.author in self.bot.blob_guild.members
+        return commands.check(predicate)
 
     @commands.command()
+    @self.is_blobian()
     async def setavatar(self, ctx, link: str):
         """Sets the bot's avatar."""
 
@@ -41,6 +46,7 @@ class Admin:
 
 
     @commands.command()
+    @self.is_blobian()
     async def load(self, ctx, *, module: str):
         """Loads a module."""
         module = f'cogs.{module}'
@@ -53,6 +59,7 @@ class Admin:
             await ctx.send('\N{OK HAND SIGN}')
     
     @commands.command()
+    @self.is_blobian()
     async def reload(self, ctx, *, module: str):
         """Reloads a module."""
         module = f'cogs.{module}'
@@ -66,6 +73,7 @@ class Admin:
             await ctx.send('\N{OK HAND SIGN}')
     
     @commands.command()
+    @self.is_blobian()
     async def unload(self, ctx, *, module: str):
         """Unloads a module."""
         module = f'cogs.{module}'
@@ -78,6 +86,7 @@ class Admin:
             await ctx.send('\N{OK HAND SIGN}')
     
     @commands.command(name='eval')
+    @self.is_blobian()
     async def _eval(self, ctx, *, body: str):
         """Evaluates code."""
         env = {

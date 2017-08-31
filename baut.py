@@ -45,6 +45,7 @@ class Bot(commands.Bot):
         super()._do_cleanup()
 
     async def on_ready(self):
+        self.blob_guild = self.get_guild(328873861481365514)
         print(f'Logged in as {self.user}')
         print('-------------')
 
@@ -56,7 +57,7 @@ class Bot(commands.Bot):
 
     async def cyc(self):
         await self.wait_until_ready()
-        guild = self.get_guild(328873861481365514)
+        guild = self.blob_guild
         for member in cycle(guild.members):
             await guild.me.edit(nick=member.name.upper())
             await asyncio.sleep(5)
