@@ -31,7 +31,7 @@ class CommandErrorHandler:
 
         embed = discord.Embed(title=f'Exception in command {ctx.command}')
         exc = ''.join(traceback.format_exception(type(error), error, error.__traceback__, chain=False))
-        embed.description = exc
+        embed.description = f'```py\n{exc}\n```'
         await ctx.bot.get_channel(352915365577228289).send(embed=embed)
 
 
