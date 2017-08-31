@@ -57,6 +57,7 @@ class Bot(commands.Bot):
 
     async def cyc(self):
         await self.wait_until_ready()
+        await asyncio.sleep(3)
         guild = self.blob_guild
         for member in cycle(guild.members):
             await guild.me.edit(nick=member.name.upper())
