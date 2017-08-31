@@ -1,3 +1,4 @@
+import datetime
 import traceback
 
 import discord
@@ -29,9 +30,18 @@ class CommandErrorHandler:
         else:
             return await ctx.send(message)
 
-        embed = discord.Embed(title=f'Exception in command {ctx.command}')
+        embed = discord.Embed(title=f'Command Exception', color=discord.Color.red())
+        embed.set_footer(text='Occured on')
+        embed.timestamp = datetime.datetime.utcnow()
+
         exc = ''.join(traceback.format_exception(type(error), error, error.__traceback__, chain=False))
         embed.description = f'```py\n{exc}\n```'
+
+        embed.add_field(name='Command', value=ctx.command.qualified_name)
+        embed.add_field(name='Invoker', value=ctx.author)
+        embed.add_field(name='Location', value=f'Guild: {ctx.guild}\nChannel: {ctx.channel}')
+        embed.add_field(name='Message', value=ctx.message.content)
+
         await ctx.bot.get_channel(352915365577228289).send(embed=embed)
 
 
