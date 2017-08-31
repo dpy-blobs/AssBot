@@ -137,11 +137,11 @@ class Admin:
             headers = {'Content-Type':'application/json',
                        'Authorization': f"token {os.environ['GH_TOKEN']}"}
             
-            async with ctx.session.put(url, data=json.dumps(data),headers=headers) as resp:
+            async with ctx.session.put(url, data=json.dumps(data), headers=headers) as resp:
                 if resp.status == 200:
                     await ctx.send(f"PR #{pr_number} | Successfully Merged")
                 else:
-                    await ctx.send(f"PR #{pr_number} | Merge Unsuccessful")
+                    await ctx.send(f"PR #{pr_number} | Merge Unsuccessful\nMessage: {await resp.json()}\nStatus: {resp.status}")
         else:
             await ctx.send("You aren't Synder ლ(ಠ益ಠლ)")
 
