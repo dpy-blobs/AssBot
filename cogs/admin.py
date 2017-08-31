@@ -13,6 +13,8 @@ class Admin:
         self.bot = bot
         self.bot._last_result = None
 
+    async def __local_check(self, ctx):
+        return ctx.author in self.bot.blob_guild.members
 
     @commands.command()
     async def setavatar(self, ctx, link: str):
@@ -87,7 +89,8 @@ class Admin:
             'author': ctx.author,
             'guild': ctx.guild,
             'message': ctx.message,
-            '_': self.bot._last_result
+            '_': self.bot._last_result,
+            'kkk': 'Racist!'
         }
 
         env.update(globals())
@@ -123,6 +126,21 @@ class Admin:
             else:
                 self.bot._last_result = ret
                 await ctx.send(f'```py\n{value}{ret}\n```')
+
+    @commands.command()
+ 	async def gitmerge(self, ctx, pr_number):
+ 		pass
+ 		'''Soon™
+ 		data = {"username": "",
+ 				"password": "",
+ 				"commit_title": "Merged by {}".format(ctx.author),
+ 				"commit_message": "Merged from command",}
+      	resp = await ctx.session.put('https://api.github.com/repos/dpy-blobs/AssBot/pulls/{}/merge'.format(pr_number), data=data)
+ 		if resp == 200:
+ 			await ctx.send(f"PR #{pr_number} | Successfully Merged")
+ 		else:
+ 			await ctx.send(f"PR #{pr_number} | Merge Unsuccessful")
+ 		'''
 
 
 def setup(bot):
