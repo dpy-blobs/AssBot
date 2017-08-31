@@ -18,7 +18,7 @@ class Reina:
         }
         self.ytdl = youtube_dl.YoutubeDL(opts)
 
-    @commands.command()
+    @commands.command(aliases=["yt"])
     async def youtube(self, ctx, *, query: str):
         """Searches YouTube and gives you the first result."""
 
