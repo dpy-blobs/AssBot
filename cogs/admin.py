@@ -89,7 +89,7 @@ class Admin:
             'author': ctx.author,
             'guild': ctx.guild,
             'message': ctx.message,
-            '_': self.bot._last_result
+            '_': self.bot._last_result,
             'kkk': 'Racist!'
         }
 
