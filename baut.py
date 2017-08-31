@@ -7,6 +7,8 @@ import aiohttp
 import discord
 from discord.ext import commands
 
+from utils import time
+
 
 class Context(commands.Context):
     @property
@@ -38,6 +40,11 @@ class Bot(commands.Bot):
     async def init(self):
         await self.wait_until_ready()
         self.start_time = datetime.datetime.utcnow()
+
+    @property
+    def uptime(self):
+        delta = datetime.datetime.utcnow() - self.start_time
+        return time.human_time(delta.total_seconds())
 
     def _do_cleanup(self):
         self.session.close()
