@@ -128,12 +128,12 @@ class Admin:
     @commands.command()
     async def gitmerge(self, ctx, pr_number):
         if ctx.author.id == 111158853839654912:
-            auth = ("dpy-blobs", os.environ["GH_TOKEN"])
-
-            data = {"commit_title": f"Merged by {ctx.author}",
+            
+            data = {"Authentication": os.environ["GH_TOKEN"],
+                    "commit_title": f"Merged by {ctx.author}",
                     "commit_message": "Merged from command"}
 
-            resp = await ctx.session.put(f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge', auth=auth, data=data)
+            resp = await ctx.session.put(f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge', data=data)
             
             if resp == 200:
                 await ctx.send(f"PR #{pr_number} | Successfully Merged")
