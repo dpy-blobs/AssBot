@@ -23,6 +23,7 @@ class Nick:
 
     @commands.command()
     async def ping(self, ctx):
+        '''Displays ping'''
         before = time.perf_counter()
         msg = await ctx.send('...')
         after = time.perf_counter()
