@@ -1,7 +1,5 @@
 import discord
 from discord.ext import commands
-import asyncio
-import os
 from io import BytesIO
 from PIL import Image
 from PIL import ImageDraw
@@ -9,13 +7,14 @@ from PIL import ImageFont
 import functools
 import time
 
+
 class Nick:
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
     async def tzone(self, ctx, content:str):
-        '''You unlock this door with the key of imagination'''
+        """You unlock this door with the key of imagination"""
         x = functools.partial(self._tzone, ctx, content)
         tzone_image = await self.bot.loop.run_in_executor(None, x)
 
@@ -23,7 +22,7 @@ class Nick:
 
     @commands.command()
     async def ping(self, ctx):
-        '''Displays ping'''
+        """Displays ping"""
         before = time.perf_counter()
         msg = await ctx.send('...')
         after = time.perf_counter()
@@ -48,6 +47,7 @@ class Nick:
 
         return bytesio
 
+
 def setup(bot):
     bot.add_cog(Nick(bot))
-	
+
