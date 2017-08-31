@@ -5,6 +5,7 @@ from discord.ext import commands
 from contextlib import redirect_stdout
 import threading
 import os
+import json
 
 
 class Admin:
@@ -128,17 +129,19 @@ class Admin:
     @commands.command()
     async def gitmerge(self, ctx, pr_number):
         if ctx.author.id == 111158853839654912:
+            url = f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge'
             
-            data = {"Authentication": os.environ["GH_TOKEN"],
-                    "commit_title": f"Merged by {ctx.author}",
-                    "commit_message": "Merged from command"}
-
-            resp = await ctx.session.put(f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge', data=data)
+            data = {'commit_title': f'Merged by {ctx.author}', 
+                    'commit_message': 'Merged from command'}
             
-            if resp == 200:
-                await ctx.send(f"PR #{pr_number} | Successfully Merged")
-            else:
-                await ctx.send(f"PR #{pr_number} | Merge Unsuccessful")
+            headers = {'Content-Type':'application/json',
+                       'Authorization': f"token {os.environ['GH_TOKEN']}"}
+            
+            async with bot.session.put(url, data=json.dumps(data),headers=headers) as resp:
+                if resp.status == 200:
+                    await ctx.send(f"PR #{pr_number} | Successfully Merged")
+                else:
+                    await ctx.send(f"PR #{pr_number} | Merge Unsuccessful")
         else:
             await ctx.send("You aren't Synder ლ(ಠ益ಠლ)")
 
