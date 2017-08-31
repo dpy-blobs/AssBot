@@ -1,11 +1,15 @@
 import io
-import textwrap
-import traceback
-from discord.ext import commands
-from contextlib import redirect_stdout
-import threading
 import os
 import json
+import textwrap
+import traceback
+import threading
+
+from contextlib import redirect_stdout
+
+import discord
+from discord.ext import commands
+
 
 
 class Admin:
