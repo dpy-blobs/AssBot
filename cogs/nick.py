@@ -14,12 +14,12 @@ class Nick:
         self.bot = bot
 
     @commands.command()
-    async def tzone(self, ctx, name:str):
+    async def tzone(self, ctx, content:str):
         '''You unlock this door with the key of imagination'''
-        x = functools.partial(self._tzone, ctx, name)
+        x = functools.partial(self._tzone, ctx, content)
         tzone_image = await self.bot.loop.run_in_executor(None, x)
 
-        await ctx.send(file=discord.File(tzone_image, filename="{}.png".format(name)))
+        await ctx.send(file=discord.File(tzone_image, filename="{}.png".format(content)))
 
     @commands.command()
     async def ping(self, ctx):
@@ -31,15 +31,15 @@ class Nick:
  
         await msg.edit(content=f'Pong! \n RTT - **{rtt:.3f}ms** \n WS - **{ws:.3f}ms**')
 
-    def _tzone(self, ctx, name:str):
-        name = name.upper()
+    def _tzone(self, ctx, content:str):
+        content = content.upper()
         img = Image.open("cog_resources/nick/twilightzone.png")
         img_w, img_h = (1280, 900)
 
         font = ImageFont.truetype("cog_resources/nick/twilightzone.ttf", 200)
         draw = ImageDraw.Draw(img)
-        t_w, t_h = draw.textsize(name, font)
-        draw.text(((img_w - t_w) / 2, (img_h - t_h) / 2), name, (192,192,192), font=font)
+        t_w, t_h = draw.textsize(content, font)
+        draw.text(((img_w - t_w) / 2, (img_h - t_h) / 2), content, (192,192,192), font=font)
 
         bytesio = BytesIO()
         img.save(bytesio, "png")
