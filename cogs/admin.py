@@ -90,6 +90,7 @@ class Admin:
             'guild': ctx.guild,
             'message': ctx.message,
             '_': self.bot._last_result
+            'kkk': 'Racist!'
         }
 
         env.update(globals())
