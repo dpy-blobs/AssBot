@@ -139,7 +139,6 @@ class Admin:
             await ctx.send(f"PR #{pr_number} | Merge Unsuccessful")
         '''
 
-
     @commands.command(name='threads', hidden=True)
     async def thread_counter(self, ctx):
         await ctx.send(len(threading.enumerate()))
