@@ -6,13 +6,20 @@ from io import BytesIO
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+import functools
 
 class Nick:
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.command()
     async def tzone(self, ctx, name:str):
+        x = functools.partial(self._tzone, ctx, name)
+        tzone_image = await bot.loop.run_in_executor(None, x)
+
+        await ctx.send(file=discord.File(tzone_image, filename="{}.png".format(name)))
+
+    def _tzone(self, ctx, name:str):
         '''You unlock this door with the key of imagination'''
         name = name.upper()
         img = Image.open("cog_resources/nick/twilightzone.png")
@@ -27,8 +34,8 @@ class Nick:
         img.save(bytesio, "png")
         bytesio.seek(0)
 
-        await ctx.send(file=discord.File(bytesio, filename="{}.png".format(name)))
-        
+        return bytesio
+
 def setup(bot):
     bot.add_cog(Nick(bot))
 	
