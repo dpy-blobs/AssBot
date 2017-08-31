@@ -16,7 +16,7 @@ class Nick:
     async def tzone(self, ctx, name:str):
         '''You unlock this door with the key of imagination'''
         x = functools.partial(self._tzone, ctx, name)
-        tzone_image = await bot.loop.run_in_executor(None, x)
+        tzone_image = await self.bot.loop.run_in_executor(None, x)
 
         await ctx.send(file=discord.File(tzone_image, filename="{}.png".format(name)))
 
