@@ -144,6 +144,6 @@ class Admin:
     async def thread_counter(self, ctx):
         await ctx.send(len(threading.enumerate()))
 
-
+        
 def setup(bot):
     bot.add_cog(Admin(bot))
