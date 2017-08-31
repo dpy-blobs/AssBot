@@ -41,9 +41,6 @@ class Nick:
                     return
 
         else:
-            await msg.add_reaction("◀")
-            await msg.add_reaction("▶")
-            await msg.add_reaction("🚫")
             r34_posts = await self.r34_search(*tags)
 
             if len(results) == 0:
