@@ -1,11 +1,15 @@
 import io
+import os
+import json
 import textwrap
 import traceback
-import asyncio
+import threading
+
+from contextlib import redirect_stdout
+
 import discord
 from discord.ext import commands
-from itertools import cycle
-from contextlib import redirect_stdout
+
 
 
 class Admin:
@@ -40,7 +44,6 @@ class Admin:
         if e.text is None:
             return f'```py\n{e.__class__.__name__}: {e}\n```'
         return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
-
 
     @commands.command()
     async def load(self, ctx, *, module: str):
@@ -128,20 +131,30 @@ class Admin:
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
     @commands.command()
- 	async def gitmerge(self, ctx, pr_number):
- 		pass
- 		'''Soon™
- 		data = {"username": "",
- 				"password": "",
- 				"commit_title": "Merged by {}".format(ctx.author),
- 				"commit_message": "Merged from command",}
-      	resp = await ctx.session.put('https://api.github.com/repos/dpy-blobs/AssBot/pulls/{}/merge'.format(pr_number), data=data)
- 		if resp == 200:
- 			await ctx.send(f"PR #{pr_number} | Successfully Merged")
- 		else:
- 			await ctx.send(f"PR #{pr_number} | Merge Unsuccessful")
- 		'''
+    async def gitmerge(self, ctx, pr_number):
+        if ctx.author.id == 111158853839654912:
+            gh_token = os.environ['GH_TOKEN']
+            url = f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge'
+            
+            data = {'commit_title': f'Merged by {ctx.author}', 
+                    'commit_message': 'Merged from command'}
+            
+            headers = {'Content-Type': 'application/json',
+                       'Authorization': f"token {gh_token}"}
+            
+            async with ctx.session.put(url, data=json.dumps(data), headers=headers) as resp:
+                if resp.status == 200:
+                    await ctx.send(f"PR #{pr_number} | Successfully Merged")
+                else:
+                    body = await resp.json()
+                    await ctx.send(f"PR #{pr_number} | Merge Unsuccessful\nMessage: {body}\nStatus: {resp.status}")
+        else:
+            await ctx.send("You aren't Synder ლ(ಠ益ಠლ)")
 
+    @commands.command(name='threads', hidden=True)
+    async def thread_counter(self, ctx):
+        await ctx.send(len(threading.enumerate()))
 
+        
 def setup(bot):
     bot.add_cog(Admin(bot))

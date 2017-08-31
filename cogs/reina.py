@@ -1,53 +1,42 @@
 import io
 import inspect
 import textwrap
-import datetime
+import functools
 
 import psutil
 import discord
 from discord.ext import commands
-
-
-def human_time(seconds):
-    seconds = int(seconds)
-    if seconds == 0:
-        return '0 seconds'
-
-    hours, remainder = divmod(seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    days, hours = divmod(hours, 24)
-    years, days = divmod(days, 365)
-
-    time_units = {
-        'year': years,
-        'day': days,
-        'hour': hours,
-        'minute': minutes,
-        'second': seconds
-    }
-
-    def _plural(name, value):
-        if value != 1:
-            name += 's'
-        return f'{value} {name}'
-
-    time = [_plural(key, value) for key, value in time_units.items() if value]
-
-    if len(time) > 2:
-        return f'{", ".join(time[:-1])}, and {time[-1]}'
-    return ' and '.join(time)
+import youtube_dl
 
 
 class Reina:
     def __init__(self):
         self.process = psutil.Process()
+        opts = {
+            'default_search': 'auto',
+            'quiet': True
+        }
+        self.ytdl = youtube_dl.YoutubeDL(opts)
+
+    @commands.command(aliases=["yt"])
+    async def youtube(self, ctx, *, query: str):
+        """Searches YouTube and gives you the first result."""
+
+        func = functools.partial(self.ytdl.extract_info, query, download=False)
+        try:
+            info = await ctx.bot.loop.run_in_executor(None, func)
+        except youtube_dl.DownloadError:
+            await ctx.send('Video not found.')
+        else:
+            if 'entries' in info:
+                info = info['entries'][0]
+            await ctx.send(info.get('webpage_url'))
 
     @commands.command()
     async def uptime(self, ctx):
         """Shows the bot's uptime."""
 
-        delta = datetime.datetime.utcnow() - ctx.bot.start_time
-        await ctx.send(f'Uptime: **{human_time(delta.total_seconds())}**.')
+        await ctx.send(f'Uptime: **{ctx.bot.uptime}**.')
 
     @commands.command()
     async def memory(self, ctx):
