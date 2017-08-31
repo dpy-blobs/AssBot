@@ -127,6 +127,21 @@ class Admin:
                 self.bot._last_result = ret
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
+    @commands.command()
+ 	async def gitmerge(self, ctx, pr_number):
+ 		pass
+ 		'''Soon™
+ 		data = {"username": "",
+ 				"password": "",
+ 				"commit_title": "Merged by {}".format(ctx.author),
+ 				"commit_message": "Merged from command",}
+      	resp = await ctx.session.put('https://api.github.com/repos/dpy-blobs/AssBot/pulls/{}/merge'.format(pr_number), data=data)
+ 		if resp == 200:
+ 			await ctx.send(f"PR #{pr_number} | Successfully Merged")
+ 		else:
+ 			await ctx.send(f"PR #{pr_number} | Merge Unsuccessful")
+ 		'''
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))
