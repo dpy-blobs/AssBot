@@ -7,6 +7,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 import functools
+import time
 
 class Nick:
     def __init__(self, bot):
