@@ -7,6 +7,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 import functools
+import time
 
 class Nick:
     def __init__(self, bot):
@@ -19,6 +20,16 @@ class Nick:
         tzone_image = await self.bot.loop.run_in_executor(None, x)
 
         await ctx.send(file=discord.File(tzone_image, filename="{}.png".format(name)))
+
+    @commands.command()
+    async def ping(self, ctx):
+        before = time.perf_counter()
+        msg = await ctx.send('...')
+        after = time.perf_counter()
+        rtt = (after - before) * 1000
+        ws = self.bot.latency * 1000
+ 
+        await msg.edit(content=f'Pong! \n RTT - **{rtt:.3f}ms** \n WS - **{ws:.3f}ms**')
 
     def _tzone(self, ctx, name:str):
         name = name.upper()
