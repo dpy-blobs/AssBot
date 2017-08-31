@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import math
 from PIL import Image, ImageOps, ImageDraw
-from io import ByteIO
+from io import BytesIO
 
 class Cute:
     def __init__(self, bot):
