@@ -15,7 +15,7 @@ class Reina:
     async def uptime(self, ctx):
         """Shows the bot's uptime."""
 
-        await ctx.send(f'Uptime: **{ctx.bot.uptime}**.
+        await ctx.send(f'Uptime: **{ctx.bot.uptime}**.')
 
     @commands.command()
     async def memory(self, ctx):
