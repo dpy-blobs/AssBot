@@ -39,4 +39,4 @@ class Cute:
         #hope it works yo
 
 def setup(bot):
-    bot.add_cog(Cute())
+    bot.add_cog(Cute(bot))
