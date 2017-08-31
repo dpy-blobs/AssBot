@@ -30,7 +30,7 @@ class Nick:
         rtt = (after - before) * 1000
         ws = self.bot.latency * 1000
  
-        await msg.edit(content=f'RTT - **{rtt:.3f}ms** \n WS - **{ws:.3f}ms**')
+        await msg.edit(content=f'RTT - **{rtt:.3f}ms**\nWS - **{ws:.3f}ms**')
 
     def _tzone(self, ctx, content:str):
         content = content.upper()
