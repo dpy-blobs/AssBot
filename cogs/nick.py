@@ -33,10 +33,10 @@ class Nick:
 
     def _tzone(self, ctx, content:str):
         content = content.upper()
-        img = Image.open("cog_resources/nick/twilightzone.png")
+        img = Image.open("resources/nick/twilightzone.png")
         img_w, img_h = (1280, 900)
 
-        font = ImageFont.truetype("cog_resources/nick/twilightzone.ttf", 200)
+        font = ImageFont.truetype("resources/nick/twilightzone.ttf", 200)
         draw = ImageDraw.Draw(img)
         t_w, t_h = draw.textsize(content, font)
         draw.text(((img_w - t_w) / 2, (img_h - t_h) / 2), content, (192,192,192), font=font)
