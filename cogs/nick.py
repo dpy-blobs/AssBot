@@ -16,6 +16,24 @@ class Nick:
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(aliases=["8ball"])
+    async def ask(self, ctx, *, question=None):
+        '''Ask a question'''
+        responses = ["Maybe", "Probably", "Most likely", "Definitely not", "No way",
+                     "Yeah, sometime soon", "A little bit", "Yes", "No", "Definitely",
+                     "In a few hours", "Sure", "Of course", "Please don't", "Go for it",
+                     "I mean, if you want to, sure", "That's probably a bad idea"]
+        if question is None:
+            await ctx.send("You forgot to ask a question")
+        else:
+            await ctx.send(random.choice(responses))
+
+    @commands.command()
+    async def coinflip(self, ctx):
+        '''Flips a coin'''
+        responses = ["Heads", "Tails"]
+        await ctx.send(random.choice(responses))
+
     @commands.command(aliases=["r34"])
     @commands.is_nsfw()
     async def rule34(self, ctx, *tags):
