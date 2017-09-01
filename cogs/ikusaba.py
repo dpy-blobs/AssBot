@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import io
 import random
 import secrets
@@ -18,6 +19,15 @@ _seed = 0
 
 def _scale(value, old_min, old_max, new_min, new_max):
     return ( (value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
+
+
+def _lerp(v0, v1, t):
+    return v0 + t * (v1 - v0)
+
+def _lerp_color(c1, c2, t):
+    return tuple(_lerp(v1, v2, t) for v1, v2 in zip(c1, c2))
+
+_lerp_pink = functools.partial((0, 0, 0), (255, 105, 180))
 
 
 async def _change_ship_seed():
@@ -110,7 +120,9 @@ class Ikusaba:
 
         score = _calculate_score(user1, user2)
         file = await self._ship_image(score, user1, user2)
-        embed = discord.Embed().set_image(url='attachment://test.png')
+        embed = (discord.Embed(colour=_lerp_pink(score / 100))
+                 .set_image(url='attachment://test.png')
+                )
         await ctx.send(f'I give {user1} and {user2} a {score}/100!', file=file, embed=embed)
 
 
