@@ -15,7 +15,7 @@ class Cute:
         for mem in mems:
             async with ctx.session.get(mem.avatar_url_as(format='png', size=512)) as r:
                 avys.append(BytesIO(await r.read()))
-        file = await bot.loop.run_in_executor(None, self._quilt, avys)
+        file = await self.bot.loop.run_in_executor(None, self._quilt, avys)
         await ctx.send(file=file)
     def _quilt(self, avys):
         xbound = math.ceil(math.sqrt(len(avys)))
