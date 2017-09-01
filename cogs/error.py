@@ -35,7 +35,8 @@ class CommandErrorHandler:
         embed.timestamp = datetime.datetime.utcnow()
 
         exc = ''.join(traceback.format_exception(type(error), error, error.__traceback__, chain=False))
-        embed.description = f'```py\n{exc.replace("`", "\u200b`")}\n```'
+        exc = exc.replace('`', '\u200b`')
+        embed.description = f'```py\n{exc}\n```'
 
         embed.add_field(name='Command', value=ctx.command.qualified_name)
         embed.add_field(name='Invoker', value=ctx.author)
