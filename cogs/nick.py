@@ -16,6 +16,12 @@ class Nick:
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command()
+    async def coinflip(self, ctx):
+        '''Flips a coin'''
+        responses = ["Heads", "Tails"]
+        await ctx.send(random.choice(responses))
+
     @commands.command(aliases=["r34"])
     @commands.is_nsfw()
     async def rule34(self, ctx, *tags):
