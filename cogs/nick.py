@@ -16,7 +16,7 @@ class Nick:
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(alisases=["r34"])
+    @commands.command(aliases=["r34"])
     @commands.is_nsfw()
     async def rule34(self, ctx, *tags):
         """Gets NSFW photos from rule 34"""
