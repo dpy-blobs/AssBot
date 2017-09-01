@@ -24,10 +24,10 @@ def _scale(value, old_min, old_max, new_min, new_max):
 def _lerp(v0, v1, t):
     return v0 + t * (v1 - v0)
 
-def _lerp_color(c1, c2, t):
-    return tuple(_lerp(v1, v2, t) for v1, v2 in zip(c1, c2))
+def _lerp_color(c1, c2, t, *, type=round):
+    return tuple(round(_lerp(v1, v2, t)) for v1, v2 in zip(c1, c2))
 
-_lerp_pink = functools.partial((0, 0, 0), (255, 105, 180))
+_lerp_pink = functools.partial(_lerp_color, (0, 0, 0), (255, 105, 180))
 
 
 async def _change_ship_seed():
@@ -120,10 +120,14 @@ class Ikusaba:
 
         score = _calculate_score(user1, user2)
         file = await self._ship_image(score, user1, user2)
-        embed = (discord.Embed(colour=_lerp_pink(score / 100))
+        colour = discord.Colour.from_rgb(*_lerp_pink(score / 100))
+
+        embed = (discord.Embed(colour=colour, description=f"{user1.mention} x {user2.mention}")
+                 .set_author(name=f'Shipping')
+                 .add_field(name='Score', value=f'{score}/100')
                  .set_image(url='attachment://test.png')
-                )
-        await ctx.send(f'I give {user1} and {user2} a {score}/100!', file=file, embed=embed)
+                 )
+        await ctx.send(file=file, embed=embed)
 
 
 def setup(bot):
