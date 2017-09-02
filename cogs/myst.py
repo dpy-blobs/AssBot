@@ -5,7 +5,7 @@ from configparser import ConfigParser
 from cogs.error import ResponseStatusError
 
 
-async def myst_fetch(session, url: str, timeout: float=None, raise_over: int=200, body: str='json'):
+async def myst_fetch(session, url: str, timeout: float=None, raise_over: int=300, body: str='json'):
 
     async with session.get(url, timeout=timeout) as resp:
         if resp.status >= raise_over:
