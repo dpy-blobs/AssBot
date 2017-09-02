@@ -45,6 +45,10 @@ class MystRandomThings:
         try:
             config.add_section(section=section)
         except configparser.DuplicateSectionError:
+            try:
+                await ctx.message.delete()
+            except:
+                pass
             return await ctx.send('That section already exists.')
         
         config.set(section=section, option=option, value=value)
@@ -55,6 +59,7 @@ class MystRandomThings:
             return await ctx.send('I have add your entry to the Config. It is a good idea to delete your message.')
 
         await ctx.send('I have add your entry to the Config.')
+
 
 
 class MystWeather:
