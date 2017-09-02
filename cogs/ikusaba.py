@@ -1,4 +1,5 @@
 import asyncio
+import collections
 import functools
 import io
 import random
@@ -17,7 +18,7 @@ _OFFSET = 2 ** 3217 - 1
 _seed = 0
 
 
-def _scale(value, old_min, old_max, new_min, new_max):
+def _scale(old_min, old_max, new_min, new_max, value):
     return ( (value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
 
 
@@ -47,11 +48,47 @@ def _user_score(user):
             )
 
 
-def _calculate_score(user1, user2):
-    if user1 == user2:
-        return 0
+_default_rating_comments = (
+    'There is no chance for this to happen.',
+    'Why...',
+    'No way, not happening.',
+    'Nope.',
+    'Maybe.',
+    'Woah this actually might happen.',
+    'owo what\'s this',
+    'You\'ve got a chance!',
+    'Definitely.',
+    'What are you waiting for?!',
+)
 
-    return ((_user_score(user1) + _user_score(user2)) * _OFFSET + _seed) % 100
+
+_value_to_index = functools.partial(_scale, 0, 100, 0, len(_default_rating_comments) - 1)
+
+
+class _ShipScore(collections.namedtuple('_ShipRating', 'score comment')):
+    __slots__ = ()
+
+    def __new__(cls, score, comment=None):
+        if comment is None:
+            index = round(_value_to_index(score))
+            print(index)
+            comment = _default_rating_comments[index]
+        return super().__new__(cls, score, comment)
+
+
+# List of possible ratings when someone attempts to ship themself
+_self_ratings = [
+    _ShipScore(0, "Rip {user1}, they're forever alone..."),
+    _ShipScore(100, "Selfcest is bestest.")
+]
+
+
+def _calculate_rating(user1, user2):
+    if user1 == user2:
+        return _self_ratings[_seed % 2]
+
+    score = ((_user_score(user1) + _user_score(user2)) * _OFFSET + _seed) % 100
+    return _ShipScore(score)
 
 
 class Ikusaba:
@@ -79,7 +116,7 @@ class Ikusaba:
 
         # Assume the two images are square
         size = min(ava_im1.size, ava_im2.size)
-        offset = round(_scale(score, 0, 100, size[0], 0))
+        offset = round(_scale(0, 100, size[0], 0, score))
 
         ava_im1.thumbnail(size)
         ava_im2.thumbnail(size)
@@ -118,13 +155,14 @@ class Ikusaba:
         if user2 is None:
             user1, user2 = ctx.author, user1
 
-        score = _calculate_score(user1, user2)
+        score, comment = _calculate_rating(user1, user2)
         file = await self._ship_image(score, user1, user2)
         colour = discord.Colour.from_rgb(*_lerp_pink(score / 100))
 
         embed = (discord.Embed(colour=colour, description=f"{user1.mention} x {user2.mention}")
                  .set_author(name=f'Shipping')
                  .add_field(name='Score', value=f'{score}/100')
+                 .add_field(name='\u200b', value=f'*{comment}*', inline=False)
                  .set_image(url='attachment://test.png')
                  )
         await ctx.send(file=file, embed=embed)
