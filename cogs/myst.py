@@ -1,9 +1,21 @@
-# import discord
+import discord
 from discord.ext import commands
 
+from configparser import ConfigParser
+from cogs.error import ResponseStatusError
 
+
+async def myst_fetch(session, url: str, timeout: float=None, raise_over: int=200, body: str='json'):
+
+    async with session.get(url, timeout=timeout) as resp:
+        if resp.status >= raise_over:
+            raise ResponseStatusError(resp.status, resp.reason, url)
+        cont = getattr(resp, body)
+        return await cont()
+
+    
 class CuteListeners:
-    raise NotImplementedError
+    pass
 
 
 class MystRandomThings:
@@ -24,21 +36,54 @@ class MystRandomThings:
         return await ctx.send(out)
 
 
-class MystSimpleTunesPlayer:
-    raise NotImplementedError
+class MystWeather:
 
+    def __init__(self, bot):
+        self.bot = bot
+        key = ConfigParser()
+        key.read('config.ini')
+        self._key = key.get("WEATHER", "_key")
 
-class MystSimpleTunes:
-    raise NotImplementedError
+    @commands.command(name='weather', aliases=['w', 'conditions'])
+    async def get_weather(self, ctx, *, location: str=None):
+
+        if location is None:
+            return await ctx.send('Please provide a location to get Weather Information for.')
+
+        base = f'http://api.apixu.com/v1/current.json?key={self._key}&q={location}'
+
+        try:
+            data = await myst_fetch(ctx.session, base, 15, raise_over=300, body='json')
+        except:
+            return await ctx.send('There was an error with your request. Please try again later.')
+
+        location = data['location']
+        locmsg = f'{location["name"]}, {location["region"]} {location["country"].upper()}'
+        current = data['current']
+
+        colour = 0xfeff3f if current['is_day'] != 0 else 0x37074b
+        embed = discord.Embed(title=f'Weather for {locmsg}',
+                              description=f'*{current["condition"]["text"]}*',
+                              colour=colour)
+        embed.set_thumbnail(url=f'http:{current["condition"]["icon"]}')
+        embed.add_field(name='Temperature', value=f'{current["temp_c"]}°C | {current["temp_f"]}°F')
+        embed.add_field(name='Feels Like', value=f'{current["feelslike_c"]}°C | {current["feelslike_f"]}°F')
+        embed.add_field(name='Precipitation', value=f'{current["precip_mm"]} mm')
+        embed.add_field(name='Humidity', value=f'{current["humidity"]}%')
+        embed.add_field(name='Windspeed', value=f'{current["wind_kph"]} kph | {current["wind_mph"]} mph')
+        embed.add_field(name='Wind Direction', value=current['wind_dir'])
+
+        await ctx.send(content=None, embed=embed)
 
 
 class MystMain:
-    raise NotImplementedError
+    pass
 
 
 class MystHandlers:
-    raise NotImplementedError
+    pass
 
 
 def setup(bot):
     bot.add_cog(MystRandomThings(bot))
+    bot.add_cog(MystWeather(bot))
