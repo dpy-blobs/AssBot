@@ -153,6 +153,18 @@ class Admin:
     async def thread_counter(self, ctx):
         await ctx.send(len(threading.enumerate()))
 
-        
+    @commands.command()
+    async def cleanup(self, ctx, limit: int = 100):
+        """Clean's up the bot's messages."""
+
+        prefixes = tuple(bot.command_prefix(ctx.bot, ctx.message))
+
+        def check(m):
+            return m.author == ctx.me or m.content.startswith(prefixes)
+
+        deleted = await ctx.purge(limit=limit, check=check)
+        await ctx.send(f'Cleaned up {len(deleted)} messages.')
+
+
 def setup(bot):
     bot.add_cog(Admin(bot))
