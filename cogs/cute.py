@@ -186,7 +186,7 @@ class Cute:
             file, i = await self.bot.loop.run_in_executor(None, self._fucker, 5, datas, False, startingstuff)
             await ctx.send(f'*{i} Avatars drawn in {(time.monotonic() - stime)*1000:.2f}ms*', file=file)
     
-    def _avyfuckery(self, depth, data, firstlayer, starting):
+    def _fucker(self, depth, data, firstlayer, starting):
         imgsize = 400
         asdf = Mycircles(starting[0], starting[1], starting[2])
         factor = ((imgsize/2)-1)/asdf.big.size
