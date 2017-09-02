@@ -34,6 +34,27 @@ class MystRandomThings:
             return await ctx.send('**This is not binary!**')
 
         return await ctx.send(out)
+    
+    @commands.command(name='cfgadd')
+    async def add_config(self, ctx, section: str, option: str, value: str):
+        # Needs an owner/Contrib role check
+
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        try:
+            config.add_section(section=section)
+        except configparser.DuplicateSectionError:
+            return await ctx.send('That section already exists.')
+        
+        config.set(section=section, option=option, value=value)
+
+        try:
+            await ctx.message.delete()
+        except:
+            return await ctx.send('I have add your entry to the Config. It is a good idea to delete your message.')
+
+        await ctx.send('I have add your entry to the Config.')
 
 
 class MystWeather:
