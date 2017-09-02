@@ -172,10 +172,10 @@ class Cute:
             return
         datas = []
         async with ctx.channel.typing():
-                for p in ctx.message.attachments:
-                    if p.width:
-                        async with ctx.session.get(p.url) as r:
-                            datas.append(BytesIO(await r.read()))
+            for p in ctx.message.attachments:
+                if p.width:
+                    async with ctx.session.get(p.url) as r:
+                        datas.append(BytesIO(await r.read()))
             if len(datas) == 0:
                 return
             stime = time.monotonic()
