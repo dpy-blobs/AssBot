@@ -26,7 +26,7 @@ class MystRandomThings:
 
     @commands.command(name='binary', aliases=['b1nary', '0101'])
     async def binary_decrpyt(self, ctx, *, inp: str):
-
+        """Decrypt binary"""
         inp = inp.replace(' ', '')
 
         try:
@@ -39,7 +39,7 @@ class MystRandomThings:
     @commands.command(name='cfgadd')
     @checks.has_contrib_role()
     async def add_config(self, ctx, section: str, option: str, value: str):
-
+        """Add a config to config.ini"""
         config = configparser.ConfigParser()
         config.read('config.ini')
 
@@ -73,7 +73,7 @@ class MystWeather:
 
     @commands.command(name='weather', aliases=['w', 'conditions'])
     async def get_weather(self, ctx, *, location: str=None):
-
+        """Check the weather in a location"""
         if location is None:
             return await ctx.send('Please provide a location to get Weather Information for.')
 
