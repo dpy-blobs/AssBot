@@ -189,12 +189,12 @@ class Observations:
         basenc = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol={}&api_key={}'
 
         cameras = ['fhaz', 'rhaz', 'mast', 'chemcam', 'mahli', 'mardt', 'mardi', 'navcam']
-        
+
         if camerainp is None:
             camera = 'none'
         else:
             camera = camerainp.lower()
-            
+
         if camerainp and camerainp.lower() != 'none':
 
             if camera not in cameras:
@@ -262,6 +262,26 @@ class Observations:
                         inline=False)
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_footer(text='Generated on ')
+        await ctx.send(content=None, embed=embed)
+    
+    @nasa.command(name='apod', aliases=['iotd'])
+    async def nasa_apod(self, ctx):
+        """Returns NASA's Astronomy Picture of the day."""
+        # todo Add the ability to select a date.
+
+        url = f'https://api.nasa.gov/planetary/apod?api_key={self._nasa_key}'
+        try:
+            data = await myst_fetch(ctx.session, url=url, timeout=15)
+        except:
+            return await ctx.send('There was an error processing your request')
+
+        embed = discord.Embed(title='Astronomy Picture of the Day', description=f'**{data["title"]}** | {data["date"]}')
+        embed.add_field(name='Explanation', value=data['explanation'], inline=False)
+        embed.add_field(name='HD Download', value=f'[Click here!]({data["hdurl"]})')
+        embed.set_image(url=data['url'])
+        embed.timestamp = datetime.datetime.utcnow()
+        embed.set_footer(text='Generated on ')
+
         await ctx.send(content=None, embed=embed)
 
 
