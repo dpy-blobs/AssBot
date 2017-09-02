@@ -132,7 +132,8 @@ class Admin:
 
     @commands.command()
     async def gitmerge(self, ctx, pr_number):
-        if ctx.author.id == 111158853839654912:
+        role = discord.utils.get(ctx.guild.roles, id=352849291733237771)
+        if role in ctx.author.roles:
             gh_token = os.environ['GH_TOKEN']
             url = f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge'
             
@@ -149,7 +150,7 @@ class Admin:
                     body = await resp.json()
                     await ctx.send(f"PR #{pr_number} | Merge Unsuccessful\nMessage: {body}\nStatus: {resp.status}")
         else:
-            await ctx.send("You aren't Synder ლ(ಠ益ಠლ)")
+            await ctx.send("You aren't a contributor ლ(ಠ益ಠლ)")
 
     @commands.command(name='threads', hidden=True)
     async def thread_counter(self, ctx):
