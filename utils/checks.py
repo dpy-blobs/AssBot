@@ -30,6 +30,12 @@ async def role_or_permissions(ctx, check, **perms):
     return False
 
 
+def has_contrib_role():
+    async def predicate(ctx):
+        role = discord.utils.get(ctx.guild.roles, id=352849291733237771)
+        return role in ctx.author.roles
+    return commands.check(predicate)
+
 def mod_or_permissions(**perms):
     async def predicate(ctx):
         return await role_or_permissions(ctx, lambda r: r.name in ('Mod', 'Admin'), **perms)
