@@ -54,6 +54,7 @@ class Bot(commands.Bot):
     async def on_ready(self):
         self.blob_guild = self.get_guild(328873861481365514)
         self.contrib_role = discord.utils.get(self.blob_guild.roles, id=352849291733237771)
+        await self.http.send_message(352011026738446336, "I'm up!")
         print(f'Logged in as {self.user}')
         print('-------------')
 
