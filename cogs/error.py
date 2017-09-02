@@ -31,6 +31,7 @@ class CommandErrorHandler:
             discord.Forbidden: '**I do not have the required permissions to run this command.**',
             commands.DisabledCommand: f'{ctx.command} has been disabled.',
             commands.NoPrivateMessage: f'{ctx.command} can not be used in Private Messages.',
+            commands.CheckFailure: '**You aren\'t allowed to use this command!**'
         }
 
         try:
