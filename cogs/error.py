@@ -5,6 +5,16 @@ import discord
 from discord.ext import commands
 
 
+class AssBotException(Exception):
+    pass
+
+
+class ResponseStatusError(AssBotException):
+    def __init__(self, status, reason, url):
+        msg = f'REQUEST::[STATUS TOO HIGH    ]: {status} - {reason} - [[{url}]]'
+        super().__init__(msg)
+
+
 class CommandErrorHandler:
     async def on_command_error(self, ctx, error):
         """The event triggered when an error is raised while invoking a command.
