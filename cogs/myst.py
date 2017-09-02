@@ -170,7 +170,7 @@ class Observations:
         pass
 
     @nasa.command(name='curiosity')
-    async def curiosity_photos(self, ctx, camerainp: str=None, date: str=None,):
+    async def curiosity_photos(self, ctx, camerainp: str=None, date: str=None):
         """Retrieve photos from Mars Rover: Curiosity.
 
         If date is None, the latest photos will be returned. A date is not guaranteed to have photos.
@@ -186,10 +186,11 @@ class Observations:
                  """
 
         base = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol={}&camera={}&api_key={}'
+        basenc = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol={}&api_key={}'
 
         cameras = ['fhaz', 'rhaz', 'mast', 'chemcam', 'mahli', 'mardt', 'mardi', 'navcam']
-        if camerainp:
-            camera = camerainp.lower()
+        camera = camerainp.lower()
+        if camerainp and camerainp.lower() != 'none':
 
             if camera not in cameras:
                 return await ctx.send('You have entered an invalid camera. Valid Cameras:\n'
@@ -202,8 +203,6 @@ class Observations:
                                       '[MARDI    : Mars Descent Imager]\n'
                                       '[NAVCAM   : Navigation Camera]\n'
                                       '```')
-        else:
-            camera = random.choice(cameras)
 
         if date is None or date == 'random':
 
@@ -214,15 +213,26 @@ class Observations:
                 return await ctx.send('There was an error with your request. Please try again later.')
 
             if date == 'random':
-                base = base.format(random.randint(0, sol["photo_manifest"]["max_sol"]), camera, self._nasa_key)
+                if camera and camera != 'none':
+                    base = base.format(random.randint(0, sol["photo_manifest"]["max_sol"]), camera, self._nasa_key)
+                else:
+                    base = basenc.format(random.randint(0, sol["photo_manifest"]["max_sol"]),self._nasa_key)
             else:
-                base = base.format(sol["photo_manifest"]["max_sol"], camera, self._nasa_key)
+                if camera and camera != 'none':
+                    base = base.format(sol["photo_manifest"]["max_sol"], camera, self._nasa_key)
+                else:
+                    base = basenc.format(sol["photo_manifest"]["max_sol"], self._nasa_key)
             date = sol["photo_manifest"]["max_sol"]
         else:
-            base = f'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?' \
-                   f'earth_date={date}' \
-                   f'&camera={camera}' \
-                   f'&api_key={self._nasa_key}'
+            if camera and camera != 'none':
+                base = f'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?' \
+                       f'earth_date={date}' \
+                       f'&camera={camera}' \
+                       f'&api_key={self._nasa_key}'
+            else:
+                base = f'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?' \
+                       f'earth_date={date}' \
+                       f'&api_key={self._nasa_key}'
 
         try:
             data = await myst_fetch(ctx.session, base, 15, body='json')
@@ -230,7 +240,8 @@ class Observations:
             return await ctx.send('There was an error with your request. Please try again later.')
 
         if len(data['photos']) <= 0:
-            return await ctx.send(f'There was no photos available on date/sol `{date}` with camera `{camera}`.')
+            return await ctx.send(f'There was no photos available on date/sol'
+                                  f' `{date}` with camera `{camera.upper() if camera else "NONE"}`.')
 
         photos = data['photos']
         main_img = random.choice(photos)
@@ -240,8 +251,10 @@ class Observations:
 
         embed = discord.Embed(title='NASA Rover: Curiosity', description=f'Date/SOL: {date}', colour=0xB22E20)
         embed.set_image(url=main_img['img_src'])
+        embed.add_field(name='Camera', value=camera.upper())
         embed.add_field(name='See Also:',
-                        value='\n'.join(x['img_src'] for x in photos[:3] if len(photos)) if len(photos) > 3 else 'None')
+                        value='\n'.join(x['img_src'] for x in photos[:3] if len(photos)) if len(photos) > 3 else 'None',
+                        inline=False)
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_footer(text='Generated on ')
         await ctx.send(content=None, embed=embed)
