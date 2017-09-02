@@ -169,8 +169,8 @@ class Observations:
     async def nasa(self, ctx):
         pass
 
-    @nasa.commands(name='curiosity')
-    async def curiosity_photos(self, ctx, date: str=None, camerainp: str=None):
+    @nasa.command(name='curiosity')
+    async def curiosity_photos(self, ctx, camerainp: str=None, date: str=None,):
         """Retrieve photos from Mars Rover: Curiosity.
 
         If date is None, the latest photos will be returned. A date is not guaranteed to have photos.
