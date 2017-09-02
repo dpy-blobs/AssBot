@@ -189,7 +189,12 @@ class Observations:
         basenc = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol={}&api_key={}'
 
         cameras = ['fhaz', 'rhaz', 'mast', 'chemcam', 'mahli', 'mardt', 'mardi', 'navcam']
-        camera = camerainp.lower()
+        
+        if camerainp is None:
+            camera = 'none'
+        else:
+            camera = camerainp.lower()
+            
         if camerainp and camerainp.lower() != 'none':
 
             if camera not in cameras:
