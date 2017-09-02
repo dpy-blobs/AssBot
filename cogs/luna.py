@@ -2,9 +2,10 @@ import asyncio
 
 from discord.ext import commands
 
+
 class Luna:
     """Gay commands"""
-    def _init__(self, bot):
+    def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
@@ -18,6 +19,7 @@ class Luna:
                 await m.edit(content=text)
 
             await asyncio.sleep(2)
+
 
 def setup(bot):
     bot.add_cog(Luna(bot))
