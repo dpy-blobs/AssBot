@@ -157,7 +157,7 @@ class Admin:
     async def cleanup(self, ctx, limit: int = 100):
         """Cleans up the bot's messages."""
 
-        prefixes = tuple(bot.command_prefix(ctx.bot, ctx.message))
+        prefixes = tuple(ctx.bot.command_prefix(ctx.bot, ctx.message))
 
         def check(m):
             return m.author == ctx.me or m.content.startswith(prefixes)
