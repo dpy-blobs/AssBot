@@ -41,7 +41,7 @@ async def _change_ship_seed():
 
 def _user_score(user):
     return (user.id
-            + int(user.avatar or user.default_avatar.value, 16)
+            + int(user.avatar or str(user.default_avatar.value), 16)
             # 0x10FFFF is the highest Unicode can go.
             + sum(ord(c) * 0x10FFFF * i for i, c in enumerate(user.name))
             + int(user.discriminator)
