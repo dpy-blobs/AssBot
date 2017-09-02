@@ -78,14 +78,14 @@ class _ShipScore(collections.namedtuple('_ShipRating', 'score comment')):
 
 # List of possible ratings when someone attempts to ship themself
 _self_ratings = [
-    _ShipScore(0, "Rip {user1}, they're forever alone..."),
+    _ShipScore(0, "Rip {user}, they're forever alone..."),
     _ShipScore(100, "Selfcest is bestest.")
 ]
 
 
 def _calculate_rating(user1, user2):
     if user1 == user2:
-        return _self_ratings[_seed % 2]
+        return _self_ratings[_seed % 2].format(user=user1)
 
     score = ((_user_score(user1) + _user_score(user2)) * _OFFSET + _seed) % 100
     return _ShipScore(score)
@@ -150,7 +150,7 @@ class Ikusaba:
                                                    user_avatar_data1, user_avatar_data2)
 
     @commands.command()
-    async def testship(self, ctx, user1: discord.Member, user2: discord.Member=None):
+    async def ship(self, ctx, user1: discord.Member, user2: discord.Member=None):
         """Ships two users together, and scores accordingly."""
         if user2 is None:
             user1, user2 = ctx.author, user1
@@ -160,7 +160,7 @@ class Ikusaba:
         colour = discord.Colour.from_rgb(*_lerp_pink(score / 100))
 
         embed = (discord.Embed(colour=colour, description=f"{user1.mention} x {user2.mention}")
-                 .set_author(name=f'Shipping')
+                 .set_author(name='Shipping')
                  .add_field(name='Score', value=f'{score}/100')
                  .add_field(name='\u200b', value=f'*{comment}*', inline=False)
                  .set_image(url='attachment://test.png')
