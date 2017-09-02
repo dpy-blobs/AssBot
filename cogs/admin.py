@@ -18,7 +18,8 @@ class Admin:
         self.bot._last_result = None
 
     async def __local_check(self, ctx):
-        return ctx.author in self.bot.blob_guild.members
+        role = discord.utils.get(ctx.guild.roles, id=352849291733237771)
+        return role in ctx.author.roles
 
     @commands.command()
     async def setavatar(self, ctx, link: str):
@@ -132,29 +133,38 @@ class Admin:
 
     @commands.command()
     async def gitmerge(self, ctx, pr_number):
-        if ctx.author.id == 111158853839654912:
-            gh_token = os.environ['GH_TOKEN']
-            url = f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge'
-            
-            data = {'commit_title': f'Merged by {ctx.author}', 
-                    'commit_message': 'Merged from command'}
-            
-            headers = {'Content-Type': 'application/json',
-                       'Authorization': f"token {gh_token}"}
-            
-            async with ctx.session.put(url, data=json.dumps(data), headers=headers) as resp:
-                if resp.status == 200:
-                    await ctx.send(f"PR #{pr_number} | Successfully Merged")
-                else:
-                    body = await resp.json()
-                    await ctx.send(f"PR #{pr_number} | Merge Unsuccessful\nMessage: {body}\nStatus: {resp.status}")
-        else:
-            await ctx.send("You aren't Synder ლ(ಠ益ಠლ)")
+        gh_token = os.environ['GH_TOKEN']
+        url = f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge'
+        
+        data = {'commit_title': f'Merged by {ctx.author}', 
+                'commit_message': 'Merged from command'}
+        
+        headers = {'Content-Type': 'application/json',
+                    'Authorization': f"token {gh_token}"}
+        
+        async with ctx.session.put(url, data=json.dumps(data), headers=headers) as resp:
+            if resp.status == 200:
+                await ctx.send(f"PR #{pr_number} | Successfully Merged")
+            else:
+                body = await resp.json()
+                await ctx.send(f"PR #{pr_number} | Merge Unsuccessful\nMessage: {body}\nStatus: {resp.status}")
 
     @commands.command(name='threads', hidden=True)
     async def thread_counter(self, ctx):
         await ctx.send(len(threading.enumerate()))
 
-        
+    @commands.command()
+    async def cleanup(self, ctx, limit: int = 100):
+        """Cleans up the bot's messages."""
+
+        prefixes = tuple(ctx.bot.command_prefix(ctx.bot, ctx.message))
+
+        def check(m):
+            return m.author == ctx.me or m.content.startswith(prefixes)
+
+        deleted = await ctx.purge(limit=limit, check=check)
+        await ctx.send(f'Cleaned up {len(deleted)} messages.')
+
+
 def setup(bot):
     bot.add_cog(Admin(bot))

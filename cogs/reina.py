@@ -18,7 +18,7 @@ class Reina:
         }
         self.ytdl = youtube_dl.YoutubeDL(opts)
 
-    @commands.command(aliases=["yt"])
+    @commands.command(aliases=['yt'])
     async def youtube(self, ctx, *, query: str):
         """Searches YouTube and gives you the first result."""
 
@@ -36,7 +36,7 @@ class Reina:
     async def uptime(self, ctx):
         """Shows the bot's uptime."""
 
-        await ctx.send(f'Uptime: **{ctx.bot.uptime}**.')
+        await ctx.send(f'Uptime: **{ctx.bot.uptime}**')
 
     @commands.command()
     async def memory(self, ctx):
