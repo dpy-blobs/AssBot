@@ -163,7 +163,7 @@ class Cute:
             stime = time.monotonic()
             starting = random.choice(okay)
             random.shuffle(starting)
-            file, i = await self.bot.loop.run_in_executor(None, self._fuckery, 5, datas, False, starting)
+            file, i = await self.bot.loop.run_in_executor(None, self._fucker, 5, datas, False, starting)
             await ctx.send(f'*{i} Avatars drawn in {(time.monotonic() - stime)*1000:.2f}ms*', file=file)
     
     @commands.command()
