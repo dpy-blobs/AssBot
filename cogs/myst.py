@@ -56,7 +56,7 @@ class MystRandomThings:
 
         opts = {
             'format': 'bestaudio/best',
-            'max_filesize': '25mb',
+            'maxfilesize': '25m',
             'outtmpl': f'%(extractor)s_%(title)s%(id)s.%(ext)s',
             'restrictfilenames': True,
             'noplaylist': True,
@@ -89,7 +89,7 @@ class MystRandomThings:
             os.remove(filename)
         except Exception as e:
             print(e)
-        
+
         try:
             await msg.delete()
         except:
