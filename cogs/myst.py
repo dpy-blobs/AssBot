@@ -3,6 +3,7 @@ from discord.ext import commands
 
 import configparser
 from cogs.error import ResponseStatusError
+from utils import checks
 
 
 async def myst_fetch(session, url: str, timeout: float=None, raise_over: int=300, body: str='json'):
@@ -36,8 +37,8 @@ class MystRandomThings:
         return await ctx.send(out)
     
     @commands.command(name='cfgadd')
+    @checks.has_contrib_role()
     async def add_config(self, ctx, section: str, option: str, value: str):
-        # Needs an owner/Contrib role check
 
         config = configparser.ConfigParser()
         config.read('config.ini')
