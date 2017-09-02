@@ -187,7 +187,7 @@ class Observations:
 
         base = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol={}&camera={}&api_key={}'
 
-        cameras = ['fhaz', 'rhaz', 'mast', 'chemcam', 'mahlt', 'mardt', 'mardi', 'navcam']
+        cameras = ['fhaz', 'rhaz', 'mast', 'chemcam', 'mahli', 'mardt', 'mardi', 'navcam']
         if camerainp:
             camera = camerainp.lower()
 
@@ -209,7 +209,7 @@ class Observations:
 
             url = f'https://api.nasa.gov/mars-photos/api/v1/manifests/Curiosity/?max_sol&api_key={self._nasa_key}'
             try:
-                sol = await myst_fetch(ctx.session,url=url, timeout=10, raise_over=300, body='json')
+                sol = await myst_fetch(ctx.session, url=url, timeout=10, raise_over=300, body='json')
             except:
                 return await ctx.send('There was an error with your request. Please try again later.')
 
