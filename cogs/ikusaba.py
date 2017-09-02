@@ -19,7 +19,7 @@ _seed = 0
 
 
 def _scale(old_min, old_max, new_min, new_max, value):
-    return ( (value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
+    return ((value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
 
 def _lerp(v0, v1, t):
