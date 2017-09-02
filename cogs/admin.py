@@ -155,7 +155,7 @@ class Admin:
 
     @commands.command()
     async def cleanup(self, ctx, limit: int = 100):
-        """Clean's up the bot's messages."""
+        """Cleans up the bot's messages."""
 
         prefixes = tuple(bot.command_prefix(ctx.bot, ctx.message))
 
