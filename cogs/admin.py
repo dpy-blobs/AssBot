@@ -20,6 +20,7 @@ class Admin:
     async def __local_check(self, ctx):
         role = discord.utils.get(ctx.guild.roles, id=352849291733237771)
         return role in ctx.author.roles
+
     @commands.command()
     async def setavatar(self, ctx, link: str):
         """Sets the bot's avatar."""
