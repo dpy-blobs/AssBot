@@ -150,7 +150,7 @@ class Ikusaba:
                                                    user_avatar_data1, user_avatar_data2)
 
     @commands.command()
-    async def testship(self, ctx, user1: discord.Member, user2: discord.Member=None):
+    async def ship(self, ctx, user1: discord.Member, user2: discord.Member=None):
         """Ships two users together, and scores accordingly."""
         if user2 is None:
             user1, user2 = ctx.author, user1
