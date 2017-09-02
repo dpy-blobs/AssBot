@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from configparser import ConfigParser
+import configparser
 from cogs.error import ResponseStatusError
 
 
@@ -61,7 +61,7 @@ class MystWeather:
 
     def __init__(self, bot):
         self.bot = bot
-        key = ConfigParser()
+        key = configparser.ConfigParser()
         key.read('config.ini')
         self._key = key.get("WEATHER", "_key")
 
