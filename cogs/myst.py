@@ -78,9 +78,7 @@ class MystRandomThings:
         try:
             filename = ytdl.prepare_filename(data['entries'][0])
         except (KeyError, ValueError, TypeError):
-            pass
-
-        filename = ytdl.prepare_filename(data)
+            filename = ytdl.prepare_filename(data)
 
         try:
             await ctx.send(content=None, file=discord.File(filename))
@@ -91,11 +89,6 @@ class MystRandomThings:
             os.remove(filename)
         except Exception as e:
             print(e)
-        
-        try:
-            await msg.delete()
-        except:
-            pass
 
     @commands.command(name='cfgadd')
     @checks.has_contrib_role()
