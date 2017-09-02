@@ -53,6 +53,7 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         self.blob_guild = self.get_guild(328873861481365514)
+        self.contrib_role = discord.utils.get(self.blob_guild.roles, id=352849291733237771)
         print(f'Logged in as {self.user}')
         print('-------------')
 
@@ -66,8 +67,7 @@ class Bot(commands.Bot):
         await self.wait_until_ready()
         await asyncio.sleep(3)
         guild = self.blob_guild
-        contrib_role = discord.utils.get(guild.roles, id=352849291733237771)
-        for member in cycle(contrib_role.members):
+        for member in cycle(self.contrib_role.members):
             await guild.me.edit(nick=member.name.upper())
             await asyncio.sleep(5)
 
