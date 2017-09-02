@@ -98,7 +98,7 @@ class Ikusaba:
             bot.session = aiohttp.ClientSession()
 
         self.bot = bot
-        self._mask = open('heart.png', 'rb')
+        self._mask = open('cogs/resources/miku/heart.png', 'rb')
         self._future = asyncio.ensure_future(_change_ship_seed())
 
     def __unload(self):
