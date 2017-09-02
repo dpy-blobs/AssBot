@@ -69,7 +69,7 @@ class Bot(commands.Bot):
         guild = self.blob_guild
         for member in cycle(self.contrib_role.members):
             await guild.me.edit(nick=member.name.upper())
-            await asyncio.sleep(5)
+            await asyncio.sleep(15)
 
 
 if __name__ == '__main__':
