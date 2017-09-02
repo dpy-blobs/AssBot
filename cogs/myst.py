@@ -263,7 +263,7 @@ class Observations:
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_footer(text='Generated on ')
         await ctx.send(content=None, embed=embed)
-    
+
     @nasa.command(name='apod', aliases=['iotd'])
     async def nasa_apod(self, ctx):
         """Returns NASA's Astronomy Picture of the day."""
@@ -279,6 +279,33 @@ class Observations:
         embed.add_field(name='Explanation', value=data['explanation'], inline=False)
         embed.add_field(name='HD Download', value=f'[Click here!]({data["hdurl"]})')
         embed.set_image(url=data['url'])
+        embed.timestamp = datetime.datetime.utcnow()
+        embed.set_footer(text='Generated on ')
+
+        await ctx.send(content=None, embed=embed)
+    
+    @nasa.command(name='epic', aliases=['EPIC'])
+    async def nasa_epic(self, ctx):
+        """Returns NASA's most recent EPIC image."""
+        # todo Add the ability to select a date.
+
+        base = f'https://api.nasa.gov/EPIC/api/natural?api_key={self._nasa_key}'
+        img_base = 'https://epic.gsfc.nasa.gov/archive/natural/{}/png/{}.png'
+
+        try:
+            data = await myst_fetch(ctx.session, base, 15)
+        except:
+            return await ctx.send('There was an error processing your request. Please try again.')
+
+        img = random.choice(data)
+        coords = img['centroid_coordinates']
+
+        embed = discord.Embed(title='NASA EPIC', description=f'*{img["caption"]}*', colour=0x1d2951)
+        embed.set_image(url=img_base.format(img['date'].split(' ')[0].replace('-', '/'), img['image']))
+        embed.add_field(name='Centroid Coordinates',
+                        value=f'Lat: {coords["lat"]} | Lon: {coords["lon"]}')
+        embed.add_field(name='Download',
+                        value=img_base.format(img['date'].split(' ')[0].replace('-', '/'), img['image']))
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_footer(text='Generated on ')
 
