@@ -11,29 +11,10 @@ import time
 import random
 
 okay = [[1, 1, 1],
-        [2, 2, 3],
-        [3, 6, 7],
-        [4, 12, 13],
-        [5, 8, 8],
-        [5, 20, 21],
-        [8, 9, 9],
-        [6, 30, 31],
-        [7, 18, 18],
-        [7, 42, 43],
-        [10, 15, 19],
-        [11, 14, 15],
-        [8, 56, 57],
-        [9, 32, 32],
-        [12, 17, 20],
-        [9, 72, 73],
-        [12, 25, 25],
-        [13, 21, 24],
-        [10, 90, 91],
-        [11, 50, 50],
-        [14, 26, 27],
-        [18, 19, 22],
-        [11, 110, 111],
-        [14, 35, 39],
+        [1, 1, 2],
+        [1, 2, 2],
+        [1, 1, 3],
+        [1, 2, 3],
         [18, 23, 27]]
 
 
@@ -180,12 +161,32 @@ class Cute:
                 async with ctx.session.get(p.avatar_url_as(format='png')) as r:
                     datas.append(BytesIO(await r.read()))
             stime = time.monotonic()
-            file, i = await self.bot.loop.run_in_executor(None, self._fuckery, 5, datas, False, random.choice(okay))
+            starting = random.choice(okay)
+            random.shuffle(starting)
+            file, i = await self.bot.loop.run_in_executor(None, self._fuckery, 5, datas, False, starting)
             await ctx.send(f'*{i} Avatars drawn in {(time.monotonic() - stime)*1000:.2f}ms*', file=file)
     
+    @commands.command()
+    async def circles(self, ctx):
+        if len(ctx.message.attachments) == 0:
+            return
+        datas = []
+        async with ctx.channel.typing():
+                for p in ctx.message.attachments:
+                    if p.width:
+                        async with ctx.session.get(p.url) as r:
+                            datas.append(BytesIO(await r.read()))
+            if len(datas) == 0:
+                return
+            stime = time.monotonic()
+            startingstuff = random.choice(okay)
+            print(startingstuff)
+            random.shuffle(startingstuff)
+            print(startingstuff)
+            file, i = await self.bot.loop.run_in_executor(None, self._fucker, 5, datas, False, startingstuff)
+            await ctx.send(f'*{i} Avatars drawn in {(time.monotonic() - stime)*1000:.2f}ms*', file=file)
     
-    
-    def _fuckery(self, depth, *data, firstlayer, starting):
+    def _avyfuckery(self, depth, data, firstlayer, starting):
         imgsize = 400
         asdf = Mycircles(starting[0], starting[1], starting[2])
         factor = ((imgsize/2)-1)/asdf.big.size
@@ -201,7 +202,7 @@ class Cute:
         maska.putalpha(maskb)
         imgs = collections.deque()
         for d in data:
-            temp = Image.open(d).resize((1024, 1024), resample=Image.BILINEAR)
+            temp = Image.open(d).resize((1024, 1024), resample=Image.BILINEAR).convert('RGBA')
             avymask = temp.split()[3]
             avymask.paste(maska, (0, 0, 1024, 1024), maska)
             temp.putalpha(avymask)
