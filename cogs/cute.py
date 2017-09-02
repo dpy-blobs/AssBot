@@ -3,6 +3,140 @@ from discord.ext import commands
 import math
 from PIL import Image, ImageOps, ImageDraw
 from io import BytesIO
+import math # Why
+import cmath
+import collections
+import aiohttp
+import time
+import random
+
+okay = [[1, 1, 1],
+        [2, 2, 3],
+        [3, 6, 7],
+        [4, 12, 13],
+        [5, 8, 8],
+        [5, 20, 21],
+        [8, 9, 9],
+        [6, 30, 31],
+        [7, 18, 18],
+        [7, 42, 43],
+        [10, 15, 19],
+        [11, 14, 15],
+        [8, 56, 57],
+        [9, 32, 32],
+        [12, 17, 20],
+        [9, 72, 73],
+        [12, 25, 25],
+        [13, 21, 24],
+        [10, 90, 91],
+        [11, 50, 50],
+        [14, 26, 27],
+        [18, 19, 22],
+        [11, 110, 111],
+        [14, 35, 39],
+        [18, 23, 27]]
+
+
+class Circle():
+    def __init__(self, x, y, r):
+        self.r = r
+        self.x = x
+        self.y = y
+        self.m = (x+y*1j)
+    def __hash__(self):
+        return self.r+self.x+self.y
+    def __eq__(self, c):
+        if isinstance(c, Circle):
+            return self.r == c.r and self.x == c.x and self.y == c.y
+    def curv(self):
+        return 1/self.r
+    @property
+    def bound(self):
+        r = abs(self.r.real)
+        return (int(self.x-r), int(self.y-r), int(self.x+r), int(self.y+r))
+    @property
+    def size(self):
+        return abs(self.r.real)
+    def correct(self, cx, cy):
+        self.x += cx
+        self.y += cy
+        self.m = (self.x+self.y*1j)
+    def resize(self, factor):
+        self.x *= factor
+        self.y *= factor
+        self.r *= factor
+        self.m = (self.x+self.y*1j)
+
+class Mycircles():
+    def __init__(self, r1, r2, r3):
+        self.circles = list(self.tang(1/r1, 1/r2, 1/r3))
+        self.big = self.circles[0]
+        self.todo = collections.deque()
+    @property
+    def num(self):
+        return len(self.circles)
+    def outer(self, c1, c2, c3):
+        '''Quality function that takes 3 circles and finds the outer circle what kisses all three'''
+        cur1 = c1.curv()
+        cur2 = c2.curv()
+        cur3 = c3.curv()
+        m1 = c1.m
+        m2 = c2.m
+        m3 = c3.m
+        cur4 = cur1 + cur2 + cur3 - 2 * cmath.sqrt(cur1 * cur2 + cur2 * cur3 + cur3 * cur1)
+        m4 = (cur1 * m1 + cur2 * m2 + cur3 * m3 - 2 * cmath.sqrt(cur1 * m1 * cur2 * m2 + cur2 * m2 * cur3 * m3 + cur3 * m3 * cur1 * m1)) / cur4
+        return Circle(m4.real, m4.imag, 1/cur4)
+    def tang(self, r2, r3, r4):
+        '''Quality function that takes 3 radiuses and makes 4 circles that are kissing'''
+        c2 = Circle(0, 0, r2) #The first circle is placed at the origin
+        c3 = Circle(r2 + r3, 0, r3) #The second circle is placed kissing the first circle to the right
+        x = (r2 * r2 + r2 * r4 + r2 * r3 - r3 * r4) / (r2 + r3) #Magic triangle maths to figure out where the of the third circle should go
+        y = cmath.sqrt((r2 + r4) * (r2 + r4) - x * x)
+        c4 = Circle(x.real, y.real, r4)
+        c1 = self.outer(c2, c3, c4)
+        offx = 0 - c1.x
+        offy = 0 - c1.y
+        c2.correct(offx, offy)
+        c3.correct(offx, offy)
+        c4.correct(offx, offy)
+        c1.correct(offx, offy)
+        return (c1, c2, c3, c4)
+    def sec(self, fixed, c1, c2, c3):
+        ''''''
+        curf = fixed.curv()
+        cur1 = c1.curv()
+        cur2 = c2.curv()
+        cur3 = c3.curv()
+        curn = 2 * (cur1 + cur2 + cur3) - curf
+        mn = (2 * (cur1 * c1.m + cur2 * c2.m + cur3 * c3.m) - curf * fixed.m) / curn
+        return Circle(mn.real, mn.imag, 1/curn)
+    def fakerecursion(self, depth):
+        curdepth = 0
+        self.todo.append(self.circles + [curdepth])
+        while curdepth < depth:
+            c1, c2, c3, c4, curdepth = self.todo.popleft() 
+            if curdepth == 0:
+                cn1 = self.sec(c1, c2, c3, c4)
+                self.circles.append(cn1)
+                self.todo.append([cn1, c2, c3, c4, curdepth + 1])
+            cn2 = self.sec(c2, c1, c3, c4)
+            if cn2 not in self.circles:
+                self.circles.append(cn2)
+            else:
+                print("dup")
+            self.todo.append([cn2, c1, c3, c4, curdepth + 1])
+            cn3 = self.sec(c3, c1, c2, c4)
+            if cn3 not in self.circles:
+                self.circles.append(cn3)
+            else:
+                print("dup")
+            self.todo.append([cn3, c1, c2, c4, curdepth + 1])
+            cn4 = self.sec(c4, c1, c2, c3)
+            if cn4 not in self.circles:
+                self.circles.append(cn4)
+            else:
+                print("dup")
+            self.todo.append([cn4, c1, c2, c3, curdepth + 1])
 
 class Cute:
     def __init__(self, bot):
@@ -36,5 +170,61 @@ class Cute:
         buffer.seek(0)
         return discord.File(buffer, filename='quilt.png')
 
+    @commands.command()
+    async def circles(self, ctx, *plebs : discord.Member = None):
+        if len(plebs) == 0:
+            plebs = [ctx.author]
+        datas = []
+        async with ctx.channel.typing():
+            for p in plebs:
+                async with ctx.session.get(p.avatar_url_as(format='png')) as r:
+                    datas.append(BytesIO(await r.read()))
+            stime = time.monotonic()
+            file, i = await self.bot.loop.run_in_executor(None, self._fuckery, 5, datas, False, random.choice(okay))
+            await ctx.send(f'*{i} Avatars drawn in {(time.monotonic() - stime)*1000:.2f}ms*', file=file)
+    
+    
+    
+    def _fuckery(self, depth, *data, firstlayer, starting):
+        imgsize = 400
+        asdf = Mycircles(starting[0], starting[1], starting[2])
+        factor = ((imgsize/2)-1)/asdf.big.size
+        for c in asdf.circles:
+            c.resize(factor)
+        asdf.fakerecursion(depth)
+        im = Image.new('RGBA', (imgsize, imgsize), color=(0, 0, 0, 0))
+        maska = Image.new('RGBA', (1024, 1024), color=(0, 0, 0, 0))
+        maskb = Image.new('L', (1024, 1024), color=255)
+        draw = ImageDraw.Draw(maskb)
+        draw.ellipse(((0,0), (1024, 1024)), fill=0)
+        del draw
+        maska.putalpha(maskb)
+        imgs = collections.deque()
+        for d in data:
+            temp = Image.open(d).resize((1024, 1024), resample=Image.BILINEAR)
+            avymask = temp.split()[3]
+            avymask.paste(maska, (0, 0, 1024, 1024), maska)
+            temp.putalpha(avymask)
+            imgs.append(temp)
+        i = 0
+        first = True
+        for a in asdf.circles:
+            if not firstlayer and first:
+                first = False
+                continue
+            a.correct(imgsize/2, imgsize/2)
+            x, y = a.bound[2]-a.bound[0], a.bound[3]-a.bound[1]
+            if not x or not y:
+                continue
+            curr = imgs.popleft()
+            temp = curr.resize((x, y), resample=Image.BILINEAR)
+            im.paste(temp, box=a.bound, mask=temp)
+            imgs.append(curr)
+            i += 1
+        bb = BytesIO()
+        im.save(bb, 'png')
+        bb.seek(0)
+        return (discord.File(bb, filename='fuckery.png'), i)
+        
 def setup(bot):
     bot.add_cog(Cute(bot))
