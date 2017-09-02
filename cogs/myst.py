@@ -89,6 +89,11 @@ class MystRandomThings:
             os.remove(filename)
         except Exception as e:
             print(e)
+        
+        try:
+            await msg.delete()
+        except:
+            pass
 
     @commands.command(name='cfgadd')
     @checks.has_contrib_role()
