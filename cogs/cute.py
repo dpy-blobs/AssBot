@@ -171,7 +171,7 @@ class Cute:
         return discord.File(buffer, filename='quilt.png')
 
     @commands.command()
-    async def circles(self, ctx, *plebs : discord.Member = None):
+    async def circles(self, ctx, *plebs : discord.Member):
         if len(plebs) == 0:
             plebs = [ctx.author]
         datas = []
