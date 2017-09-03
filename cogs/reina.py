@@ -70,21 +70,23 @@ class Reina:
 
     @commands.command()
     async def source(self, ctx, *, command: str):
-        """Posts the source code of a command."""
+        """Posts the source code of a command or cog."""
 
         cmd = ctx.bot.get_command(command)
-        if cmd is None:
-            return await ctx.send(f'Command {command} not found.')
+        if cmd is not None:
+            code = inspect.getsource(cmd.callback)
+            code = textwrap.dedent(code).replace('`', '\u200b​`')
+        else:
+            cog = ctx.bot.get_cog(command)
+            if cog is None:
+                return await ctx.send('I could not find this command or cog.')
+            code = inspect.getsource(cog.__class__)
+            code = textwrap.dedent(code).replace('`', '\u200b​`')
 
-        code = inspect.getsource(cmd.callback)
-        code = textwrap.dedent(code).replace('`', '\u200b​`')
+        if len(code) > 1990:
+            return await ctx.bot.create_gist(f'Source for {command}', [(f'{command}.py', code)])
 
-        p = commands.Paginator(prefix='```py')
-        for line in code.split('\n'):
-            p.add_line(line)
-
-        for page in p.pages:
-            await ctx.send(page)
+        return await ctx.send(f'```py\n{code}\n```')
 
 
 def setup(bot):
