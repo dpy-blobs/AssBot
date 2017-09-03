@@ -15,7 +15,7 @@ class ResponseStatusError(AssBotException):
         super().__init__(msg)
 
 
-class ExplicitCheckFailure(commands.CheckFailure):
+class ExplicitCheckFailure(commands.CommandError):
     """Raised when NSFW checks fail."""
     def __init__(self, command):
         msg = f'An explicit content check for {command.qualified_name} has failed'
