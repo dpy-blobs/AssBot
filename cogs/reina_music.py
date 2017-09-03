@@ -13,10 +13,11 @@ from utils.paginator import Pages
 from utils import time
 from concurrent.futures import ThreadPoolExecutor
 
+discord.opus.load_opus('libopus.so.0.5.3')
+
 
 class YoutubeEntry:
     def __init__(self, **kwargs):
-        discord.opus.load_opus("libopus.so.0.5.3")
         self.url = kwargs.get('webpage_url')
         self.download_url = kwargs.get('url')
         self.views = kwargs.get('view_count')
