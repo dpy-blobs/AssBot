@@ -150,17 +150,22 @@ class Mycircles():
 class Cute:
     def __init__(self, bot):
         self.bot = bot
-        
+        self.futabag = {'C':'You too~!',
+                        'M':'I will not!'}
     @commands.command(hidden=True)
     async def ute(self, ctx):
         pre = self.bot.command_prefix(self.bot, ctx.message)
-        msg = ''
-        if pre == 'C':
-            msg = 'You too~!'
-        elif pre == 'M':
-            msg = 'I will not!'
-        if msg != '':
+        msg = self.futabag.get(pre, 'I don\'t know what to say to that...')
             await ctx.send(msg)
+        
+    @commands.command(hidden=True)
+    async def setute(self, ctx, *, text : str = None):
+        if text is None:
+            await ctx.send('I don\'t know what to say to that...')
+        else:
+            pre = self.bot.command_prefix(self.bot, ctx.message)
+            self.futabag[pre] = text
+            await ctx.send('\U0001f44c')
         
     @commands.command()
     async def quilt(self, ctx, *mems : discord.Member):
