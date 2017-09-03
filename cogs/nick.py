@@ -10,6 +10,7 @@ from discord.ext import commands
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+from utils.checks import nsfw
 
 
 class Nick:
@@ -35,7 +36,7 @@ class Nick:
         await ctx.send(random.choice(responses))
 
     @commands.command(aliases=["r34"])
-    @commands.is_nsfw()
+    @commands.nsfw()
     async def rule34(self, ctx, *tags):
         """Gets NSFW photos from rule 34"""
         embed = discord.Embed(title="Rule 34", colour=0x9B59B6, type="rich")
