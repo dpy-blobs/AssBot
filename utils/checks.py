@@ -1,6 +1,16 @@
 import discord.utils
 
 from discord.ext import commands
+from cogs.error import ExplicitCheckFailure
+
+
+def nsfw():
+    """A :func:`.check` that checks if the channel is a NSFW channel."""
+    def pred(ctx):
+        if isinstance(ctx.channel, discord.TextChannel) and ctx.channel.is_nsfw():
+            return True
+        raise ExplicitCheckFailure(ctx.command)
+    return check(pred)
 
 
 async def check_permissions(ctx, perms):
