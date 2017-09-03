@@ -88,7 +88,7 @@ class Admin:
                     success.append(pr)
                 else:
                     body = await resp.json()
-                    failure.append(f"PR #{pr} | Merge Unsuccessful\nMessage: {body["message"]}\nStatus: {resp.status}")
+                    failure.append(f"PR #{pr} | Merge Unsuccessful\nMessage: {body['message']}\nStatus: {resp.status}")
             await asyncio.sleep(5)
 
         sjoin = ', '.join(success)
