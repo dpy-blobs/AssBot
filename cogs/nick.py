@@ -50,9 +50,9 @@ class Nick:
                 await msg.add_reaction("🚫")
 
                 try:
-                    reaction, user = await self.bot.wait_for("reaction_add", check=lambda r, u: u.id != self.bot.user.id, timeout=15)
+                    reaction, user = await self.bot.wait_for("reaction_add", check=lambda r, u: u.id != self.bot.user.id, timeout=60)
                 except asyncio.TimeoutError:
-                    return
+                    return await msg.delete()
                 
                 await msg.delete()
                 if str(reaction) == "🔄":
@@ -79,9 +79,9 @@ class Nick:
                     await msg.add_reaction("🚫")
                     
                     try:
-                        reaction, user = await self.bot.wait_for("reaction_add", check=lambda r, u: u.id != self.bot.user.id, timeout=15)
+                        reaction, user = await self.bot.wait_for("reaction_add", check=lambda r, u: u.id != self.bot.user.id, timeout=60)
                     except asyncio.TimeoutError:
-                        return
+                        return await msg.delete()
                     
                     await msg.delete()
                     if str(reaction) == "◀" and index > 0:
