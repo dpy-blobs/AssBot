@@ -11,6 +11,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 from utils.checks import nsfw
+from cogs.myst import myst_fetch
 
 
 class Nick:
@@ -42,7 +43,7 @@ class Nick:
         embed = discord.Embed(title="Rule 34", colour=0x9B59B6, type="rich")
         if len(tags) == 0:
             while True:
-                r34_post = await self.r34_random()
+                r34_post = await self.r34_random(ctx)
                 embed.set_image(url=r34_post["url"])
 
                 msg = await ctx.send(embed=embed)
@@ -51,10 +52,11 @@ class Nick:
                 await msg.add_reaction("🚫")
 
                 try:
-                    reaction, user = await self.bot.wait_for("reaction_add", check=lambda r, u: u.id != self.bot.user.id, timeout=60)
+                    reaction, user = await self.bot.wait_for("reaction_add",
+                                                             check=lambda r, u: u.id != self.bot.user.id, timeout=60)
                 except asyncio.TimeoutError:
                     return await msg.delete()
-                
+
                 await msg.delete()
                 if str(reaction) == "🔄":
                     continue
@@ -62,7 +64,7 @@ class Nick:
                     return
 
         else:
-            r34_posts = await self.r34_search(*tags)
+            r34_posts = await self.r34_search(ctx, *tags)
 
             if len(r34_posts) == 0:
                 await ctx.send("I was unable to find a post with those tags")
@@ -78,12 +80,14 @@ class Nick:
                     await msg.add_reaction("◀")
                     await msg.add_reaction("▶")
                     await msg.add_reaction("🚫")
-                    
+
                     try:
-                        reaction, user = await self.bot.wait_for("reaction_add", check=lambda r, u: u.id != self.bot.user.id, timeout=60)
+                        reaction, user = await self.bot.wait_for("reaction_add",
+                                                                 check=lambda r, u: u.id != self.bot.user.id,
+                                                                 timeout=60)
                     except asyncio.TimeoutError:
                         return await msg.delete()
-                    
+
                     await msg.delete()
                     if str(reaction) == "◀" and index > 0:
                         index -= 1
@@ -93,7 +97,7 @@ class Nick:
                         return
 
     @commands.command(aliases=["twilightzone"])
-    async def tzone(self, ctx, content:str):
+    async def tzone(self, ctx, content: str):
         """You unlock this door with the key of imagination"""
         x = functools.partial(self._tzone, ctx, content)
         tzone_image = await self.bot.loop.run_in_executor(None, x)
@@ -108,39 +112,49 @@ class Nick:
         after = time.perf_counter()
         rtt = (after - before) * 1000
         ws = self.bot.latency * 1000
- 
+
         await msg.edit(content=f'RTT - **{rtt:.3f}ms**\nWS - **{ws:.3f}ms**')
 
-    async def r34_search(self, *tags): #Returns a list of dictionaries {"URL", "SCORE"} (rule34_posts)
-        search_url = "http://rule34.xxx/index.php?page=dapi&s=post&q=index&tags={}".format("+".join(tags))
-        async with aiohttp.ClientSession() as session:
-            async with session.get(search_url) as resp:
-                _posts = et.fromstring(await resp.text())
-                posts = []
-                for post in _posts:
+    async def r34_search(self, ctx, *tags):  # Returns a list of dictionaries {"URL", "SCORE"} (rule34_posts)
+        base = "http://rule34.xxx/index.php?page=dapi&s=post&q=index&tags={}".format("+".join(tags))
+
+        try:
+            data = await myst_fetch(ctx.session, base, 15, body='text')
+        except:
+            return await ctx.send('There was an error with your request. Please try again later.')
+
+        _posts = et.fromstring(data)
+        posts = []
+        for post in _posts:
+            post = {"url": post.attrib["file_url"], "score": int(post.attrib["score"])}
+            if ".webm" in post["url"]:
+                continue
+            posts.append(post)
+        sorted_posts = sorted(posts, key=lambda post: post["score"], reverse=True)
+        return sorted_posts
+
+    async def r34_random(self, ctx):
+
+        while True:
+            page_id = str(random.randint(0, 2372222))
+            try:
+                data = await myst_fetch(ctx.session,
+                                        "http://rule34.xxx/index.php?page=dapi&s=post&q=index&id={}".format(page_id),
+                                        body='text')
+            except:
+                return await ctx.send('There was an error with your request. Please try again.')
+
+            posts = et.fromstring(data)
+            if len(posts) == 0:
+                continue
+            else:
+                for post in posts:
                     post = {"url": post.attrib["file_url"], "score": int(post.attrib["score"])}
                     if ".webm" in post["url"]:
                         continue
-                    posts.append(post)
-                sorted_posts = sorted(posts, key=lambda post: post["score"], reverse=True)
-        return sorted_posts
-    
-    async def r34_random(self):
-        while True:
-            page_id = str(random.randint(0,2372222))
-            async with aiohttp.ClientSession() as session:
-                async with session.get("http://rule34.xxx/index.php?page=dapi&s=post&q=index&id={}".format(page_id)) as resp:
-                    posts = et.fromstring(await resp.text())
-                    if len(posts) == 0:
-                        continue
-                    else:
-                        for post in posts:
-                            post = {"url": post.attrib["file_url"], "score": int(post.attrib["score"])}
-                            if ".webm" in post["url"]:
-                                continue
-                    return post
+            return post
 
-    def _tzone(self, ctx, content:str):
+    def _tzone(self, ctx, content: str):
         content = content.upper()
         img = Image.open("cogs/resources/nick/twilightzone.png")
         img_w, img_h = (1280, 900)
@@ -148,13 +162,14 @@ class Nick:
         font = ImageFont.truetype("cogs/resources/nick/twilightzone.ttf", 200)
         draw = ImageDraw.Draw(img)
         t_w, t_h = draw.textsize(content, font)
-        draw.text(((img_w - t_w) / 2, (img_h - t_h) / 2), content, (192,192,192), font=font)
+        draw.text(((img_w - t_w) / 2, (img_h - t_h) / 2), content, (192, 192, 192), font=font)
 
         bytesio = BytesIO()
         img.save(bytesio, "png")
         bytesio.seek(0)
 
         return bytesio
+
 
 def setup(bot):
     bot.add_cog(Nick(bot))
