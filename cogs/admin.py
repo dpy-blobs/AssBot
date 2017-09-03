@@ -4,6 +4,7 @@ import json
 import textwrap
 import traceback
 import threading
+import asyncio
 
 from contextlib import redirect_stdout
 
@@ -152,6 +153,7 @@ class Admin:
                 else:
                     body = await resp.json()
                     failure.append(f"PR #{pr} | Merge Unsuccessful\nMessage: {body}\nStatus: {resp.status}")
+            await asyncio.sleep(5)
 
         sjoin = ', '.join(success)
         fjoin = '\n'.join(failure)
