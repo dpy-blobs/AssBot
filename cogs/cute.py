@@ -153,7 +153,7 @@ class Cute:
         
     @commands.command(hidden=True)
     async def ute(self, ctx):
-        pre = self.bot.command_prefix()
+        pre = self.bot.command_prefix(self.bot, ctx.message)
         if pre == 'C':
             msg = 'You too~!'
         elif pre == 'M':
