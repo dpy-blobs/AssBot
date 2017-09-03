@@ -151,7 +151,7 @@ class Cute:
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command()
+    @commands.command(hidden=True)
     async def ute(self, ctx):
         pre = self.bot.command_prefix()
         if pre == 'C':
