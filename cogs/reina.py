@@ -89,7 +89,7 @@ class Reina:
     async def source(self, ctx, *, entity: SourceEntity):
         """Posts the source code of a command, cog or extension."""
         code = inspect.getsource(entity)
-        code = textwrap.dedent(code).replace('`', '\u200b​`')
+        code = textwrap.dedent(code).replace('`', '\u200b`')
 
         if len(code) > 1990:
             name = entity.__name__
