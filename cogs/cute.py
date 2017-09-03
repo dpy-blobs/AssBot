@@ -154,11 +154,13 @@ class Cute:
     @commands.command(hidden=True)
     async def ute(self, ctx):
         pre = self.bot.command_prefix(self.bot, ctx.message)
+        msg = ''
         if pre == 'C':
             msg = 'You too~!'
         elif pre == 'M':
             msg = 'I will not!'
-        await ctx.send(msg)
+        if msg != '':
+            await ctx.send(msg)
         
     @commands.command()
     async def quilt(self, ctx, *mems : discord.Member):
