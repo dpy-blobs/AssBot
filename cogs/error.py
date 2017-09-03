@@ -15,6 +15,13 @@ class ResponseStatusError(AssBotException):
         super().__init__(msg)
 
 
+class ExplicitCheckFailure(commands.CheckFailure):
+    """Raised when NSFW checks fail."""
+    def __init__(self, command):
+        msg = f'An explicit content check for {command.qualified_name} has failed'
+        super().__init__(msg)
+
+
 class CommandErrorHandler:
     async def on_command_error(self, ctx, error):
         """The event triggered when an error is raised while invoking a command.
@@ -31,7 +38,8 @@ class CommandErrorHandler:
             discord.Forbidden: '**I do not have the required permissions to run this command.**',
             commands.DisabledCommand: f'{ctx.command} has been disabled.',
             commands.NoPrivateMessage: f'{ctx.command} can not be used in Private Messages.',
-            commands.CheckFailure: '**You aren\'t allowed to use this command!**'
+            commands.CheckFailure: '**You aren\'t allowed to use this command!**',
+            ExplicitCheckFailure: f'This command can only be used in a **NSFW** channel.'
         }
 
         try:
