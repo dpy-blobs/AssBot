@@ -84,7 +84,8 @@ class Reina:
             code = textwrap.dedent(code).replace('`', '\u200b​`')
 
         if len(code) > 1990:
-            return await ctx.bot.create_gist(f'Source for {command}', [(f'{command}.py', code)])
+            gist = await ctx.bot.create_gist(f'Source for {command}', [(f'{command}.py', code)])
+            return awaitc ctx.send(f'**Your requested sauce was too stronk. So I uploaded to gist!**\n<{gist}>')
 
         return await ctx.send(f'```py\n{code}\n```')
 
