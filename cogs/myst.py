@@ -23,6 +23,7 @@ async def myst_fetch(session, url: str, timeout: float = None, raise_over: int =
 
 
 class CuteListeners:
+    """KEK"""
     pass
 
 
