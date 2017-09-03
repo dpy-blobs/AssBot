@@ -9,6 +9,23 @@ from discord.ext import commands
 import youtube_dl
 
 
+class SourceEntity(commands.Converter):
+    async def convert(self, ctx, arg):
+        cmd = ctx.bot.get_command(arg)
+        if cmd is not None:
+            return cmd.callback
+
+        cog = ctx.bot.get_cog(arg)
+        if cog is not None:
+            return cog.__class__
+
+        module = ctx.bot.extensions.get(arg)
+        if module is not None:
+            return module
+
+        raise commands.BadArgument(f'{arg} is neither a command, a cog, nor an extension.')
+
+
 class Reina:
     def __init__(self):
         self.process = psutil.Process()
@@ -69,25 +86,22 @@ class Reina:
                                              filename))
 
     @commands.command()
-    async def source(self, ctx, *, command: str):
-        """Posts the source code of a command or cog."""
-
-        cmd = ctx.bot.get_command(command)
-        if cmd is not None:
-            code = inspect.getsource(cmd.callback)
-            code = textwrap.dedent(code).replace('`', '\u200b​`')
-        else:
-            cog = ctx.bot.get_cog(command)
-            if cog is None:
-                return await ctx.send('I could not find this command or cog.')
-            code = inspect.getsource(cog.__class__)
-            code = textwrap.dedent(code).replace('`', '\u200b​`')
+    async def source(self, ctx, *, entity: SourceEntity):
+        """Posts the source code of a command, cog or extension."""
+        code = inspect.getsource(entity)
+        code = textwrap.dedent(code).replace('`', '\u200b​`')
 
         if len(code) > 1990:
-            gist = await ctx.bot.create_gist(f'Source for {command}', [(f'{command}.py', code)])
+            name = entity.__name__
+            gist = await ctx.bot.create_gist(f'Source for {name}', [(f'{name}.py', code)])
             return await ctx.send(f'**Your requested sauce was too stronk. So I uploaded to gist!**\n<{gist}>')
 
         return await ctx.send(f'```py\n{code}\n```')
+
+    @source.error
+    async def source_error(self, ctx, error):
+        if isinstance(error, commands.BadArgument):
+            await ctx.send(error)
 
 
 def setup(bot):
