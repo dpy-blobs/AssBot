@@ -11,7 +11,6 @@ import discord
 from discord.ext import commands
 
 
-
 class Admin:
     def __init__(self, bot):
         self.bot = bot
@@ -57,7 +56,7 @@ class Admin:
             await ctx.send(f'{type(e).__name__}: {e}')
         else:
             await ctx.send('\N{OK HAND SIGN}')
-    
+
     @commands.command()
     async def reload(self, ctx, *, module: str):
         """Reloads a module."""
@@ -70,7 +69,7 @@ class Admin:
             await ctx.send(f'{type(e).__name__}: {e}')
         else:
             await ctx.send('\N{OK HAND SIGN}')
-    
+
     @commands.command()
     async def unload(self, ctx, *, module: str):
         """Unloads a module."""
@@ -82,7 +81,7 @@ class Admin:
             await ctx.send(f'{type(e).__name__}: {e}')
         else:
             await ctx.send('\N{OK HAND SIGN}')
-    
+
     @commands.command(name='eval')
     async def _eval(self, ctx, *, body: str):
         """Evaluates code."""
@@ -132,22 +131,37 @@ class Admin:
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
     @commands.command()
-    async def gitmerge(self, ctx, pr_number):
+    async def gitmerge(self, ctx, *pr_numbers):
         gh_token = os.environ['GH_TOKEN']
-        url = f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr_number}/merge'
-        
-        data = {'commit_title': f'Merged by {ctx.author}', 
+
+        success = []
+        failure = []
+
+        data = {'commit_title': f'Merged by {ctx.author}',
                 'commit_message': 'Merged from command'}
-        
+
         headers = {'Content-Type': 'application/json',
-                    'Authorization': f"token {gh_token}"}
-        
-        async with ctx.session.put(url, data=json.dumps(data), headers=headers) as resp:
-            if resp.status == 200:
-                await ctx.send(f"PR #{pr_number} | Successfully Merged")
-            else:
-                body = await resp.json()
-                await ctx.send(f"PR #{pr_number} | Merge Unsuccessful\nMessage: {body}\nStatus: {resp.status}")
+                   'Authorization': f"token {gh_token}"}
+
+        for pr in pr_numbers:
+            url = f'https://api.github.com/repos/dpy-blobs/AssBot/pulls/{pr}/merge'
+
+            async with ctx.session.put(url, data=json.dumps(data), headers=headers) as resp:
+                if resp.status == 200:
+                    success.append(pr)
+                else:
+                    body = await resp.json()
+                    failure.append(f"PR #{pr} | Merge Unsuccessful\nMessage: {body}\nStatus: {resp.status}")
+
+        sjoin = ', '.join(success)
+        fjoin = '\n'.join(failure)
+
+        if failure and success:
+            return await ctx.send(f"PR #(s) **{sjoin}** | Successfully Merged.\n{fjoin}")
+        if not failure and success:
+            return await ctx.send(f'PR #(s) **{sjoin}** | Successfully Merged.')
+        else:
+            await ctx.send(fjoin)
 
     @commands.command(name='threads', hidden=True)
     async def thread_counter(self, ctx):
