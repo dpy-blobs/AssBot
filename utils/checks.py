@@ -9,7 +9,7 @@ def nsfw():
     def pred(ctx):
         if isinstance(ctx.channel, discord.TextChannel) and ctx.channel.is_nsfw():
             return True
-        raise ExplicitCheckFailure
+        raise ExplicitCheckFailure(ctx.command)
     return check(pred)
 
 
