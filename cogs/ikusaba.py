@@ -41,7 +41,7 @@ async def _change_ship_seed():
 
 def _user_score(user):
     return (user.id
-            + int(user.avatar or user.default_avatar.value, 16)
+            + int(user.avatar or str(user.default_avatar.value), 16)
             # 0x10FFFF is the highest Unicode can go.
             + sum(ord(c) * 0x10FFFF * i for i, c in enumerate(user.name))
             + int(user.discriminator)
@@ -78,14 +78,15 @@ class _ShipScore(collections.namedtuple('_ShipRating', 'score comment')):
 
 # List of possible ratings when someone attempts to ship themself
 _self_ratings = [
-    _ShipScore(0, "Rip {user}, they're forever alone..."),
-    _ShipScore(100, "Selfcest is bestest.")
+    "Rip {user}, they're forever alone...",
+    "Selfcest is bestest.",
 ]
 
 
 def _calculate_rating(user1, user2):
     if user1 == user2:
-        return _self_ratings[_seed % 2].format(user=user1)
+        index = _seed % 2
+        return _ShipScore(index * 100, _self_ratings[index].format(user=user1))
 
     score = ((_user_score(user1) + _user_score(user2)) * _OFFSET + _seed) % 100
     return _ShipScore(score)
