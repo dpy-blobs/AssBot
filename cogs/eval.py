@@ -73,4 +73,4 @@ class Eval:
 
 def setup(bot):
     bot._last_result = None
-    bot.add_cog(Admin())
+    bot.add_cog(Eval())
