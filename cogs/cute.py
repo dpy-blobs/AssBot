@@ -156,7 +156,7 @@ class Cute:
     async def ute(self, ctx):
         pre = self.bot.command_prefix(self.bot, ctx.message)
         msg = self.futabag.get(pre, 'I don\'t know what to say to that...')
-            await ctx.send(msg)
+        await ctx.send(msg)
         
     @commands.command(hidden=True)
     async def setute(self, ctx, *, text : str = None):
