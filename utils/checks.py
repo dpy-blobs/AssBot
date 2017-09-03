@@ -10,7 +10,7 @@ def nsfw():
         if isinstance(ctx.channel, discord.TextChannel) and ctx.channel.is_nsfw():
             return True
         raise ExplicitCheckFailure(ctx.command)
-    return check(pred)
+    return commands.check(pred)
 
 
 async def check_permissions(ctx, perms):
