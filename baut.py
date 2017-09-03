@@ -37,6 +37,8 @@ class Bot(commands.Bot):
 
         self.loop.create_task(self.cyc())
         self.loop.create_task(self.init())
+        for command in (self._load, self._unload, self._reload):
+            self.add_command(command)
 
     async def init(self):
         await self.wait_until_ready()
@@ -71,6 +73,46 @@ class Bot(commands.Bot):
         for member in cycle(self.contrib_role.members):
             await guild.me.edit(nick=member.name.upper())
             await asyncio.sleep(15)
+
+    @commands.command(name='load')
+    async def _load(self, ctx, *, module: str):
+        """Loads a module."""
+
+        module = f'cogs.{module}'
+        try:
+            self.load_extension(module)
+        except Exception as e:
+            await ctx.send('\N{PISTOL}')
+            await ctx.send(f'{type(e).__name__}: {e}')
+        else:
+            await ctx.send('\N{OK HAND SIGN}')
+
+    @commands.command(name='reload')
+    async def _reload(self, ctx, *, module: str):
+        """Reloads a module."""
+
+        module = f'cogs.{module}'
+        try:
+            self.unload_extension(module)
+            self.load_extension(module)
+        except Exception as e:
+            await ctx.send('\N{PISTOL}')
+            await ctx.send(f'{type(e).__name__}: {e}')
+        else:
+            await ctx.send('\N{OK HAND SIGN}')
+
+    @commands.command(name='unload')
+    async def _unload(self, ctx, *, module: str):
+        """Unloads a module."""
+
+        module = f'cogs.{module}'
+        try:
+            self.unload_extension(module)
+        except Exception as e:
+            await ctx.send('\N{PISTOL}')
+            await ctx.send(f'{type(e).__name__}: {e}')
+        else:
+            await ctx.send('\N{OK HAND SIGN}')
 
 
 if __name__ == '__main__':
