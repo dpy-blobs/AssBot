@@ -185,6 +185,10 @@ class Cute:
             print(startingstuff)
             file, i = await self.bot.loop.run_in_executor(None, self._fucker, 5, datas, False, startingstuff)
             await ctx.send(f'*{i} Avatars drawn in {(time.monotonic() - stime)*1000:.2f}ms*', file=file)
+    @commands.command()
+    async def avyserver(self, ctx):
+        mems = ctx.guild.members
+        await ctx.invoke(self.bot.get_command('avys'), *random.sample(mems, len(mems) if len(mems) <= 50 else 50))
     
     def _fucker(self, depth, data, firstlayer, starting):
         imgsize = 400
