@@ -11,6 +11,7 @@ from discord.ext import commands
 class Admin:
     def __init__(self, bot):
         self.bot = bot
+        self.process = psutil.Process()
 
     async def __local_check(self, ctx):
         role = discord.utils.get(ctx.guild.roles, id=352849291733237771)
