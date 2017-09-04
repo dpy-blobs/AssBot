@@ -54,7 +54,7 @@ class Nick:
         elif question.startswith(("what movie should", "what film should")):
             html = await fetch(ctx.session, "https://www.randomlists.com/random-movies", 15, body='text')
             soup = BeautifulSoup(html, "html.parser")
-            tags = soup.find_all(class_="crux")
+            tags = soup.find_all(class_="support")
             movies = []
             for tag in tags:
                 movies.append(tag.text)
@@ -62,7 +62,7 @@ class Nick:
         elif question.startswith(("what game should", "what video game should", "what videogame should")):
             html = await fetch(ctx.session, "https://www.randomlists.com/random-video-games", 15, body='text')
             soup = BeautifulSoup(html, "html.parser")
-            tags = soup.find_all(class_="crux")
+            tags = soup.find_all(class_="support")
             games = []
             for tag in tags:
                 games.append(tag.text)
