@@ -11,7 +11,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 from utils.checks import nsfw
-from cogs.utils.connectors import fetch
+from utils.connectors import fetch
 
 
 class Nick:
