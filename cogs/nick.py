@@ -21,10 +21,27 @@ class Nick:
     @commands.command(aliases=["8ball"])
     async def ask(self, ctx, *, question=None):
         '''Ask a question'''
-        responses = ["Maybe", "Probably", "Most likely", "Definitely not", "No way",
-                     "Yeah, sometime soon", "A little bit", "Yes", "No", "Definitely",
-                     "In a few hours", "Sure", "Of course", "Please don't", "Go for it",
-                     "I mean, if you want to, sure", "That's probably a bad idea"]
+        question = question.lower()
+
+        time_units = ["years", "months", "days", "hours", "minutes", "seconds"]
+
+        if question.startswith("should"):
+            responses = ["Yes", "No", "Definitely", "Sure", "Of course", "Maybe", 
+                         "Probably", "Most likely", "Definitely not", "No way",
+                         "Please don't", "Go ahead!", "I mean, if you want to, sure",
+                         "Sure, but be careful", "That's probably not a good idea"]
+        elif question.startswith("when"):
+            responses = ["In a few hours", "Sometime this month", "When pigs fly",
+                         "Not anythime soon, that's for sure", "By the end of the week",
+                         "Let's hope that never happens", "I am genuinely unsure",
+                         "Soon", "No idea, but be sure to tell me when it does",
+                         "In a dog's age", "I don't know, but hopefully it's in my lifetime",
+                         f"In {random.randint(1, 101)} {random.choice(time_units)}"]
+        else:
+            responses = ["Yes", "No", "Definitely", "Sure", "Of course", "Maybe", 
+                         "Probably", "Most likely", "Definitely not", "No way",
+                         "I hope not", "Better be", "I don't think so"]
+
         if question is None:
             await ctx.send("You forgot to ask a question")
         else:
