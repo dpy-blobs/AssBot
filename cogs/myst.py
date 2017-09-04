@@ -11,7 +11,7 @@ import datetime
 import random
 
 from utils import checks
-from cogs.utils.fetchers import fetch
+from cogs.utils.connectors import fetch
 
 
 class CuteListeners:
