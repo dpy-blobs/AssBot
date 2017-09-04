@@ -2,6 +2,7 @@ import os
 import json
 import threading
 import asyncio
+import psutil
 
 import discord
 from discord.ext import commands
@@ -116,6 +117,23 @@ class Admin:
 
         deleted = await ctx.purge(limit=limit, check=check)
         await ctx.send(f'Cleaned up {len(deleted)} messages.')
+        
+    @commands.command(name='tickstats')
+    async def usage_ticker(self, ctx):
+        """Not really a tick cause ratelimits.
+        Spam stats every 5 sconds for 5 minutes."""
+
+        msg = await ctx.send(f'Starting stats ticker...')
+
+        for x in range(1, 60):
+            cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
+            memory_usage = self.process.memory_full_info().uss / 1024 ** 2
+            if x % 5 == 0:
+                await msg.delete()
+                msg = await ctx.send(content=f'Memory Usage: **{memory_usage:.2f} MiB**  | CPU Usage: **{cpu_usage}%**')
+            else:
+                await msg.edit(content=f'Memory Usage: **{memory_usage:.2f} MiB**  | CPU Usage: **{cpu_usage}%**')
+            await asyncio.sleep(5)
 
 
 def setup(bot):
