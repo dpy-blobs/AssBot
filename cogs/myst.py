@@ -10,16 +10,8 @@ import os
 import datetime
 import random
 
-from cogs.error import ResponseStatusError
 from utils import checks
-
-
-async def myst_fetch(session, url: str, timeout: float = None, raise_over: int = 300, body: str = 'json'):
-    async with session.get(url, timeout=timeout) as resp:
-        if resp.status >= raise_over:
-            raise ResponseStatusError(resp.status, resp.reason, url)
-        cont = getattr(resp, body)
-        return await cont()
+from cogs.utils.fetchers import fetch
 
 
 class CuteListeners:
@@ -141,7 +133,7 @@ class Observations:
         base = f'http://api.apixu.com/v1/current.json?key={self._weather_key}&q={location}'
 
         try:
-            data = await myst_fetch(ctx.session, base, 15, raise_over=300, body='json')
+            data = await fetch(ctx.session, base, 15, raise_over=300, body='json')
         except asyncio.TimeoutError:
             return await ctx.send('Our Weather API seems to be experiencing difficulties. Please try again later.')
         except ResponseStatusError:
@@ -214,7 +206,7 @@ class Observations:
 
             url = f'https://api.nasa.gov/mars-photos/api/v1/manifests/Curiosity/?max_sol&api_key={self._nasa_key}'
             try:
-                sol = await myst_fetch(ctx.session, url=url, timeout=10, raise_over=300, body='json')
+                sol = await fetch(ctx.session, url=url, timeout=10, raise_over=300, body='json')
             except:
                 return await ctx.send('There was an error with your request. Please try again later.')
 
@@ -241,7 +233,7 @@ class Observations:
                        f'&api_key={self._nasa_key}'
 
         try:
-            data = await myst_fetch(ctx.session, base, 15, body='json')
+            data = await fetch(ctx.session, base, 15, body='json')
         except:
             return await ctx.send('There was an error with your request. Please try again later.')
 
@@ -272,7 +264,7 @@ class Observations:
 
         url = f'https://api.nasa.gov/planetary/apod?api_key={self._nasa_key}'
         try:
-            data = await myst_fetch(ctx.session, url=url, timeout=15)
+            data = await fetch(ctx.session, url=url, timeout=15)
         except:
             return await ctx.send('There was an error processing your request')
 
@@ -294,7 +286,7 @@ class Observations:
         img_base = 'https://epic.gsfc.nasa.gov/archive/natural/{}/png/{}.png'
 
         try:
-            data = await myst_fetch(ctx.session, base, 15)
+            data = await fetch(ctx.session, base, 15)
         except:
             return await ctx.send('There was an error processing your request. Please try again.')
 
