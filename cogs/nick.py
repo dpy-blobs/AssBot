@@ -11,7 +11,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 from utils.checks import nsfw
-from cogs.myst import myst_fetch
+from cogs.utils.connectors import fetch
 
 
 class Nick:
@@ -119,7 +119,7 @@ class Nick:
         base = "http://rule34.xxx/index.php?page=dapi&s=post&q=index&tags={}".format("+".join(tags))
 
         try:
-            data = await myst_fetch(ctx.session, base, 15, body='text')
+            data = await fetch(ctx.session, base, 15, body='text')
         except:
             return await ctx.send('There was an error with your request. Please try again later.')
 
@@ -138,7 +138,7 @@ class Nick:
         while True:
             page_id = str(random.randint(0, 2372222))
             try:
-                data = await myst_fetch(ctx.session,
+                data = await fetch(ctx.session,
                                         "http://rule34.xxx/index.php?page=dapi&s=post&q=index&id={}".format(page_id),
                                         body='text')
             except:
