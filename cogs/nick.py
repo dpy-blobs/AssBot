@@ -95,12 +95,15 @@ class Nick:
 
                 msg = await ctx.send(embed=embed)
 
+                def check(reaction, user):
+                    return (user.id != self.bot.user.id
+                            and reaction.message.id == msg.id)
+
                 await msg.add_reaction("🔄")
                 await msg.add_reaction("🚫")
 
                 try:
-                    reaction, user = await self.bot.wait_for("reaction_add",
-                                                             check=lambda r, u: u.id != self.bot.user.id, timeout=60)
+                    reaction, user = await self.bot.wait_for("reaction_add", check=check, timeout=60)
                 except asyncio.TimeoutError:
                     return await msg.delete()
 
@@ -123,15 +126,17 @@ class Nick:
                     embed.set_footer(text="({}/{})".format(index + 1, str(len(r34_posts))))
 
                     msg = await ctx.send(embed=embed)
+                    # Thanks for the repetition Nick.
+                    def check(reaction, user):
+                        return (user.id != self.bot.user.id
+                                and reaction.message.id == msg.id)
 
                     await msg.add_reaction("◀")
                     await msg.add_reaction("▶")
                     await msg.add_reaction("🚫")
 
                     try:
-                        reaction, user = await self.bot.wait_for("reaction_add",
-                                                                 check=lambda r, u: u.id != self.bot.user.id,
-                                                                 timeout=60)
+                        reaction, user = await self.bot.wait_for("reaction_add", check=check, timeout=60)
                     except asyncio.TimeoutError:
                         return await msg.delete()
 
