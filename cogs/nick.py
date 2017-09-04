@@ -24,39 +24,53 @@ class Nick:
         '''Ask a question'''
         question = question.lower()
 
-        time_units = ["years", "months", "days", "hours", "minutes", "seconds"]
-        fast_food_chains = ["McDonald's", "Wendy's", "Burger King", "A&W", "KFC", "Taco Bell"]
-
-        html = await fetch(ctx.session, "https://www.randomlists.com/random-celebrities", 15, body='text')
-        soup = BeautifulSoup(html, "html.parser")
-        tags = soup.find_all(class_="crux")
-        celebrities = []
-        for tag in tags:
-            celebrities.append(tag.text)
-
         if question.startswith("should"):
-            responses = ["Yes", "No", "Definitely", "Sure", "Of course", "Maybe", 
-                         "Probably", "Most likely", "Definitely not", "No way",
-                         "Please don't", "Go ahead!", "I mean, if you want to, sure",
-                         "Sure, but be careful", "That's probably not a good idea"]
-        elif question.startswith("who"):
-            responses = celebrities
+            responses = ("Yes", "No", "Definitely", "Sure", "Of course", "Maybe", 
+                         "Probably" "Definitely not", "No way", "Please don't", 
+                         "Go ahead!", "I mean, if you want to, sure", "Sure, but be careful", 
+                         "That's probably not a good idea")
         elif question.startswith("where"):
-            responses = ["Just over there", "In your closet", "Probably hiding from you",
+            fast_food_chains = ("McDonald's", "Wendy's", "Burger King", "A&W", "KFC", "Taco Bell")
+            responses = ("Just over there", "In your closet", "Probably hiding from you",
                          f"At the nearest {random.choice(fast_food_chains)}",
                          "Right behind you", "At the store", "Just a few blocks away",
-                         "Nowhere near here"]
+                         "Nowhere near here")
         elif question.startswith("when"):
-            responses = ["In a few hours", "Sometime this month", "When pigs fly",
+            time_units = ("years", "months", "days", "hours", "minutes", "seconds")
+            responses = ("In a few hours", "Sometime this month", "When pigs fly",
                          "Not anythime soon, that's for sure", "By the end of the week",
                          "Let's hope that never happens", "I am genuinely unsure",
                          "Soon", "No idea, but be sure to tell me when it does",
                          "In a dog's age", "I don't know, but hopefully it's in my lifetime",
-                         f"In {random.randint(1, 101)} {random.choice(time_units)}"]
+                         f"In {random.randint(1, 101)} {random.choice(time_units)}")
+        elif question.startswith("who"):
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-celebrities", 15, body='text')
+            soup = BeautifulSoup(html, "html.parser")
+            tags = soup.find_all(class_="crux")
+            celebrities = []
+            for tag in tags:
+                celebrities.append(tag.text)
+            responses = celebrities
+        elif question.startswith(("what movie should", "what film should")):
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-movies", 15, body='text')
+            soup = BeautifulSoup(html, "html.parser")
+            tags = soup.find_all(class_="crux")
+            movies = []
+            for tag in tags:
+                movies.append(tag.text)
+            responses = movies
+        elif question.startswith(("what game should", "what video game should", "what videogame should")):
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-video-games", 15, body='text')
+            soup = BeautifulSoup(html, "html.parser")
+            tags = soup.find_all(class_="crux")
+            games = []
+            for tag in tags:
+                games.append(tag.text)
+            responses = games
         else:
-            responses = ["Yes", "No", "Definitely", "Sure", "Of course", "Maybe", 
+            responses = ("Yes", "No", "Definitely", "Sure", "Of course", "Maybe", 
                          "Probably", "Most likely", "Definitely not", "No way",
-                         "I hope not", "Better be", "I don't think so"]
+                         "I hope not", "Better be", "I don't think so")
 
         if question is None:
             await ctx.send("You forgot to ask a question")
@@ -167,7 +181,6 @@ class Nick:
         return sorted_posts
 
     async def r34_random(self, ctx):
-
         while True:
             page_id = str(random.randint(0, 2372222))
             try:
