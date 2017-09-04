@@ -44,7 +44,7 @@ class Nick:
                          "In a dog's age", "I don't know, but hopefully it's in my lifetime",
                          f"In {random.randint(1, 101)} {random.choice(time_units)}")
         elif question.startswith("who"):
-            html = await fetch(ctx.session, "https://www.randomlists.com/random-celebrities", 15, body='text')
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-celebrities?a", 15, body='text')
             soup = BeautifulSoup(html, "html.parser")
             tags = soup.find_all(class_="crux")
             celebrities = []
@@ -52,7 +52,7 @@ class Nick:
                 celebrities.append(tag.text)
             responses = celebrities
         elif question.startswith(("what movie should", "what film should")):
-            html = await fetch(ctx.session, "https://www.randomlists.com/random-movies", 15, body='text')
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-movies?a", 15, body='text')
             soup = BeautifulSoup(html, "html.parser")
             tags = soup.find_all(class_="support")
             movies = []
@@ -60,7 +60,7 @@ class Nick:
                 movies.append(tag.text)
             responses = movies
         elif question.startswith(("what game should", "what video game should", "what videogame should")):
-            html = await fetch(ctx.session, "https://www.randomlists.com/random-video-games", 15, body='text')
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-video-games?a", 15, body='text')
             soup = BeautifulSoup(html, "html.parser")
             tags = soup.find_all(class_="support")
             games = []
