@@ -28,9 +28,18 @@ class CommandErrorHandler:
         ctx   : Context
         error : Exception"""
         
+        if hasattr(ctx.command, 'on_error'):
+            return
+
+        cog = ctx.cog
+        if cog:
+            attr = f'_{cog.__class__.__name__}__error'
+            if hasattr(cog, attr):
+                return
+
         error = getattr(error, 'original', error)
 
-        ignored = (commands.CommandNotFound, commands.BadArgument)
+        ignored = (commands.CommandNotFound, commands.UserInputError)
         if isinstance(error, ignored):
             return
 
