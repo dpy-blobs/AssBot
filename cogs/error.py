@@ -27,6 +27,8 @@ class CommandErrorHandler:
         """The event triggered when an error is raised while invoking a command.
         ctx   : Context
         error : Exception"""
+        
+        return await ctx.send('Fuck off...)
 
         error = getattr(error, 'original', error)
 
