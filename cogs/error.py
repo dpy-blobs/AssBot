@@ -28,8 +28,6 @@ class CommandErrorHandler:
         ctx   : Context
         error : Exception"""
         
-        return await ctx.send('Fuck off...')
-
         error = getattr(error, 'original', error)
 
         ignored = (commands.CommandNotFound, commands.BadArgument)
