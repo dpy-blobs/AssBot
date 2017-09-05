@@ -30,8 +30,7 @@ class Reina:
     def __init__(self):
         self.process = psutil.Process()
         opts = {
-            'default_search': 'auto',
-            'quiet': True
+            'quiet': True,
         }
         self.ytdl = youtube_dl.YoutubeDL(opts)
 
@@ -39,7 +38,7 @@ class Reina:
     async def youtube(self, ctx, *, query: str):
         """Searches YouTube and gives you the first result."""
 
-        func = functools.partial(self.ytdl.extract_info, query, download=False)
+        func = functools.partial(self.ytdl.extract_info, f'ytsearch:{query}', download=False)
         try:
             info = await ctx.bot.loop.run_in_executor(None, func)
         except youtube_dl.DownloadError:
