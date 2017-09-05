@@ -12,6 +12,7 @@ import random
 
 from utils import checks
 from utils.connectors import fetch
+from cogs.error import ResponseStatusError
 
 
 class CuteListeners:
