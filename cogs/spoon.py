@@ -24,22 +24,22 @@ class Spoon:
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, target: discord.Member, reason=None):
         """kicks a pleb from the server"""
-        await target.kick(reason)
+        await target.kick(reason=reason)
         await ctx.send(f'\N{OK HAND SIGN} {target} kicked')
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, target: discord.Member, reason=None):
         """bans a pleb from the server"""
-        await target.ban(reason)
+        await target.ban(reason=reason)
         await ctx.send(f'\N{OK HAND SIGN} {target} banned')
 
-    @commands.command()
+    @commands.command(aliases=['soft'])
     @commands.has_permissions(kick_members=True)
-    async def soft(self, ctx, target: discord.Member, reason=None):
-        """bans a pleb from the server"""
-        await target.ban(reason)
-        await target.unban(reason)
+    async def softban(self, ctx, target: discord.Member, reason=None):
+        """softbans a pleb from the server"""
+        await target.ban(reason=reason)
+        await target.unban(reason=reason)
         await ctx.send(f'\N{OK HAND SIGN} {target} softbanned')
 
     @commands.command()
