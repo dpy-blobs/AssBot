@@ -9,6 +9,18 @@ class AssBotException(Exception):
     pass
 
 
+class InvalidChannelCheck(commands.CommandError):
+    def __init__(self, command):
+        msg = f'A TextChannel type check for {command.qualified_name} has failed'
+        super().__init__(msg)
+
+
+class BotPermissionsCheck(commands.CommandError):
+    def __init__(self, command):
+        msg = f'A bot permissions check for {command.qualified_name} has failed'
+        super().__init__(msg)
+
+
 class ResponseStatusError(AssBotException):
     def __init__(self, status, reason, url):
         msg = f'REQUEST::[STATUS TOO HIGH    ]: {status} - {reason} - [[{url}]]'
@@ -48,7 +60,10 @@ class CommandErrorHandler:
             commands.DisabledCommand: f'{ctx.command} has been disabled.',
             commands.NoPrivateMessage: f'{ctx.command} can not be used in Private Messages.',
             commands.CheckFailure: '**You aren\'t allowed to use this command!**',
-            ExplicitCheckFailure: f'This command can only be used in a **NSFW** channel.'
+            ExplicitCheckFailure: f'This command can only be used in a **NSFW** channel.',
+            InvalidChannelCheck: f'{ctx.command} can only be used in a server',
+            BotPermissionsCheck: 'For **any** of the moderation commands, the bot must be given\n'
+                                 'Manage Messages, Manage Nicknames, Kick Members and Ban Members'
         }
 
         try:
