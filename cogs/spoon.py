@@ -37,7 +37,7 @@ class Spoon:
     @commands.command(aliases=['soft'])
     @commands.has_permissions(kick_members=True)
     async def softban(self, ctx, target: discord.Member, reason=None):
-        """bans a pleb from the server"""
+        """softbans a pleb from the server"""
         await target.ban(reason=reason)
         await target.unban(reason=reason)
         await ctx.send(f'\N{OK HAND SIGN} {target} softbanned')
