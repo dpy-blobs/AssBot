@@ -72,7 +72,7 @@ class Bot(commands.Bot):
         guild = self.blob_guild
         for member in cycle(self.contrib_role.members):
             await guild.me.edit(nick=member.name.upper())
-            await asyncio.sleep(15)
+            await asyncio.sleep(90)
 
     async def create_gist(self, description, files, pretty=False):
         """
