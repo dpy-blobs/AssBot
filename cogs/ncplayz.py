@@ -20,9 +20,9 @@ class NCPlayz:
         await ctx.send(msg)
         
     @channel.error()
-    async def channelerror(self, ctx):
+    async def error_channel(self, ctx):
         if isinstance(exception, commands.BadArgument):
-            ctx.send("There was an error when performing that action.")
+            await ctx.send("There was an error when performing that action.")
             
     @ID.command()
     async def role(self, ctx, *, role: discord.Role):
