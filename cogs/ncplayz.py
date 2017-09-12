@@ -12,7 +12,7 @@ class NCPlayz:
             await ctx.send('Invalid Type! {0.subcommand_passed} is not a valid command!'.format(ctx))
 
     @ID.command()
-    async def channel(self, ctx, *, channel: discord.Channel = None):
+    async def channel(self, ctx, *, channel: discord.TextChannel = None):
         """Fetches the ID of a specified channel"""
         channel = channel or ctx.channel
         if channel:
