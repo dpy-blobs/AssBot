@@ -71,7 +71,7 @@ class Obw:
     async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User):
         channel = reaction.message.channel
 
-        if reaction.emoji == "\N{CLOSED UMBERELLA}":
+        if reaction.emoji == "\N{CLOSED UMBRELLA}":
             await channel.send(f"{user.mention} **You need a jacket.**\nIt's raining outside.")
         elif reaction.custom_emoji:
             if reaction.emoji.id in [332904800595214336, 329291315718389771]:
