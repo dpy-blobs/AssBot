@@ -17,11 +17,13 @@ class NCPlayz:
         channel = channel or ctx.channel
         if channel:
             msg = "The id of the channel `{0}` is `{0.id}".format(channel)
-        else: 
-            msg = "**Error!** A channel named {0} could not be found! You must enter the exact name (including caps).".format(request)
         await ctx.send(msg)
         
-
+    @channel.error()
+    async def channelerror(self, ctx):
+        if isinstance(exception, commands.BadArgument):
+            ctx.send("There was an error when performing that action.")
+            
     @ID.command()
     async def role(self, ctx, *, role: discord.Role):
         """Fetches the ID of a specified role"""
