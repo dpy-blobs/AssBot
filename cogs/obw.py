@@ -64,7 +64,7 @@ class Obw:
         if reaction.emoji == "\N{CLOSED UMBERELLA}":
             await channel.send(f"{user.mention} **You need a jacket.**\nIt's raining outside.")
         elif reaction.custom_emoji:
-            if reaction.emoji.id == 332904800595214336:
+            if reaction.emoji.id in [332904800595214336, 329291315718389771]:
                 await channel.send(str(reaction.emoji))
 
 def setup(bot: commands.Bot):
