@@ -19,6 +19,10 @@ class Nick:
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(aliases=["gh"])
+    async def github(self, ctx):
+        await ctx.send("https://github.com/dpy-blobs/AssBot")
+
     @commands.command()
     async def invite(self, ctx):
         await ctx.send("https://discordapp.com/oauth2/authorize?client_id=254615108519460865&scope=bot")
