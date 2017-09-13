@@ -39,17 +39,17 @@ class Nick:
         discoverer = text.split('Discoverer: ')[1].split('\n')[0]
 
         embed = discord.Embed(title=element_name, colour=0x33cc82, type="rich")
-        await embed.add_field('Name', element_name)
-        await embed.add_field('Symbol', element_symbol)
-        await embed.add_field('Atomic Number', atomic_number)
-        await embed.add_field('Atomic Mass', atomic_mass)
-        await embed.add_field('Neutrons', neutrons)
-        await embed.add_field('Shells', shells)
-        await embed.add_field('Family', family)
-        await embed.add_field('Color', color)
-        await embed.add_field('Uses', uses)
-        await embed.add_field('Year of Discovery', discovery_year)
-        await embed.add_field('Discoverer', discoverer)
+        embed.add_field(name='Name', value=element_name)
+        embed.add_field(name='Symbol', value=element_symbol)
+        embed.add_field(name='Atomic Number', value=atomic_number)
+        embed.add_field(name='Atomic Mass', value=atomic_mass)
+        embed.add_field(name='Neutrons', value=neutrons)
+        embed.add_field(name='Shells', value=shells)
+        embed.add_field(name='Family', value=family)
+        embed.add_field(name='Color', value=color)
+        embed.add_field(name='Uses', value=uses)
+        embed.add_field(name='Year of Discovery', value=discovery_year)
+        embed.add_field(name='Discoverer', value=discoverer)
 
         await ctx.send(embed=embed)
 
