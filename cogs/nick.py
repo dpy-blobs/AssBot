@@ -21,7 +21,11 @@ class Nick:
 
     @commands.command(aliases=["element"])
     async def atom(self, ctx, element):
-        html = await fetch(ctx.session, f"http://www.chemicalelements.com/elements/{element}.html", 15, body='text')
+        try:
+            html = await fetch(ctx.session, f"http://www.chemicalelements.com/elements/{element.lower()}.html", 15, body='text')
+        except:
+            await ctx.send(f"Could not find and element with the symbol \"{element.upper()}\"")
+            return
         soup = BeautifulSoup(html, "html.parser")
 
         text = soup.get_text()
