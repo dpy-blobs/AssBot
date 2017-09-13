@@ -7,7 +7,7 @@ class NCPlayz:
         
     @commands.command(aliases = ["id"])
     async def ID(self, ctx):
-        """Get the ID of a channel, user, or role"""
+        """Get the ID of a channel, user, role, or the server."""
         if ctx.invoked_subcommand is None:
             await ctx.send('Invalid Type! {0.subcommand_passed} is not a valid command!'.format(ctx))
 
@@ -15,14 +15,13 @@ class NCPlayz:
     async def channel(self, ctx, *, channel: discord.TextChannel = None):
         """Fetches the ID of a specified channel"""
         channel = channel or ctx.channel
-        if channel:
-            msg = "The id of the channel `{0}` is `{0.id}".format(channel)
+        msg = "The id of the channel `{0}` is `{0.id}".format(channel)
         await ctx.send(msg)
         
-    @channel.error()
+    @channel.error
     async def error_channel(self, ctx):
         if isinstance(exception, commands.BadArgument):
-            await ctx.send("There was an error when performing that action.")
+            await ctx.send("Invalid Channel ID! Make sure it is case sensitive and is spelt correctly.")
             
     @ID.command()
     async def role(self, ctx, *, role: discord.Role):
@@ -31,10 +30,10 @@ class NCPlayz:
              msg = "The id of the role `{0}` is `{0.id}".format(role)
         await ctx.send(msg)
         
-    @role.error()
+    @role.error
     async def error_role(self, ctx):
         if isinstance(exception, commands.BadArgument):
-            await ctx.send("There was an error when performing that action.")
+            await ctx.send("Invalid Role ID! Make sure it is case sensitive and is spelt correctly.")
     
     @ID.command()
     async def member(self, ctx, *, member: discord.Member = None):
@@ -45,11 +44,12 @@ class NCPlayz:
         await ctx.send(msg)
       
 
-    @member.error()
+    @member.error
     async def error_member(self, ctx):
         if isinstance(exception, commands.BadArgument):
-            await ctx.send("There was an error when performing that action.")
+            await ctx.send("Invalid Member ID! Make sure it is case sensitive and is spelt correctly.")
             
+    @commands.guild_only()            
     @ID.command()
     async def server(self, ctx):
         """Fetches the ID of the server """
