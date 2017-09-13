@@ -19,6 +19,40 @@ class Nick:
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(aliases=["element"])
+    async def atom(self, ctx, element):
+        html = await fetch(ctx.session, f"http://www.chemicalelements.com/elements/{element}.html", 15, body='text')
+        soup = BeautifulSoup(html, "html.parser")
+
+        text = soup.get_text()
+
+        element_name = text.split('Name: ')[1].split('\n')[0]
+        element_symbol = text.split('Symbol: ')[1].split('\n')[0]
+        atomic_number = text.split('Atomic Number: ')[1].split('\n')[0]
+        atomic_mass = text.split('Atomic Mass: ')[1].split('\n')[0]
+        neutrons = text.split('Number of Neutrons: ')[1].split('\n')[0]
+        shells = text.split('Number of Energy Levels: ')[1].split('\n')[0]
+        family = text.split('Classification: ')[1].split('\n')[0]
+        color = text.split('Color: ')[1].split('\n')[0]
+        uses = text.split('Uses: ')[1].split('\n')[0]
+        discovery_year = text.split('Date of Discovery: ')[1].split('\n')[0]
+        discoverer = text.split('Discoverer: ')[1].split('\n')[0]
+
+        embed = discord.Embed(title=element_name, colour=0x33cc82, type="rich")
+        await embed.add_field('Name', element_name)
+        await embed.add_field('Symbol', element_symbol)
+        await embed.add_field('Atomic Number', atomic_number)
+        await embed.add_field('Atomic Mass', atomic_mass)
+        await embed.add_field('Neutrons', neutrons)
+        await embed.add_field('Shells', shells)
+        await embed.add_field('Family', family)
+        await embed.add_field('Color', color)
+        await embed.add_field('Uses', uses)
+        await embed.add_field('Year of Discovery', discovery_year)
+        await embed.add_field('Discoverer', discoverer)
+
+        await ctx.send(embed=embed)
+
     @commands.command(aliases=["gh"])
     async def github(self, ctx):
         await ctx.send("https://github.com/dpy-blobs/AssBot")
