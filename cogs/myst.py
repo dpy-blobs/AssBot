@@ -134,7 +134,7 @@ class Observations:
         base = f'http://api.apixu.com/v1/current.json?key={self._weather_key}&q={location}'
 
         try:
-            data = await fetch(ctx.session, base, 15, raise_over=300, body='json')
+            data = await fetch(ctx.session, base, timeout=15, raise_over=300, return_type='json')
         except asyncio.TimeoutError:
             return await ctx.send('Our Weather API seems to be experiencing difficulties. Please try again later.')
         except ResponseStatusError:
@@ -207,7 +207,7 @@ class Observations:
 
             url = f'https://api.nasa.gov/mars-photos/api/v1/manifests/Curiosity/?max_sol&api_key={self._nasa_key}'
             try:
-                sol = await fetch(ctx.session, url=url, timeout=10, raise_over=300, body='json')
+                sol = await fetch(ctx.session, url, timeout=10, raise_over=300, return_type='json')
             except:
                 return await ctx.send('There was an error with your request. Please try again later.')
 
@@ -234,7 +234,7 @@ class Observations:
                        f'&api_key={self._nasa_key}'
 
         try:
-            data = await fetch(ctx.session, base, 15, body='json')
+            data = await fetch(ctx.session, base, timeout=15, return_type='json')
         except:
             return await ctx.send('There was an error with your request. Please try again later.')
 
@@ -287,7 +287,7 @@ class Observations:
         img_base = 'https://epic.gsfc.nasa.gov/archive/natural/{}/png/{}.png'
 
         try:
-            data = await fetch(ctx.session, base, 15)
+            data = await fetch(ctx.session, base, timeout=15)
         except:
             return await ctx.send('There was an error processing your request. Please try again.')
 
