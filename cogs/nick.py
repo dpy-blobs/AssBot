@@ -22,7 +22,8 @@ class Nick:
     @commands.command(aliases=["element"])
     async def atom(self, ctx, element):
         try:
-            html = await fetch(ctx.session, f"http://www.chemicalelements.com/elements/{element.lower()}.html", 15, body='text')
+            html = await fetch(ctx.session, f"http://www.chemicalelements.com/elements/{element.lower()}.html", timeout=15,
+                               return_type='text')
         except:
             await ctx.send(f"Could not find and element with the symbol \"{element.upper()}\"")
             return
@@ -90,7 +91,7 @@ class Nick:
                          "In a dog's age", "I don't know, but hopefully it's in my lifetime",
                          f"In {random.randint(1, 101)} {random.choice(time_units)}")
         elif question.startswith("who"):
-            html = await fetch(ctx.session, "https://www.randomlists.com/random-celebrities?a", 15, body='text')
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-celebrities?a", timeout=15, return_type='text')
             soup = BeautifulSoup(html, "html.parser")
             tags = soup.find_all(class_="crux")
             celebrities = []
@@ -98,7 +99,7 @@ class Nick:
                 celebrities.append(tag.text)
             responses = celebrities
         elif question.startswith(("what movie should", "what film should")):
-            html = await fetch(ctx.session, "https://www.randomlists.com/random-movies?a", 15, body='text')
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-movies?a", timeout=15, return_type='text')
             soup = BeautifulSoup(html, "html.parser")
             tags = soup.find_all(class_="support")
             movies = []
@@ -106,7 +107,7 @@ class Nick:
                 movies.append(tag.text)
             responses = movies
         elif question.startswith(("what game should", "what video game should", "what videogame should")):
-            html = await fetch(ctx.session, "https://www.randomlists.com/random-video-games?a", 15, body='text')
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-video-games?a", timeout=15, return_type='text')
             soup = BeautifulSoup(html, "html.parser")
             tags = soup.find_all(class_="support")
             games = []
@@ -217,7 +218,7 @@ class Nick:
         base = "http://rule34.xxx/index.php?page=dapi&s=post&q=index&tags={}".format("+".join(tags))
 
         try:
-            data = await fetch(ctx.session, base, 15, body='text')
+            data = await fetch(ctx.session, base, timeout=15, return_type='text')
         except:
             return await ctx.send('There was an error with your request. Please try again later.')
 
@@ -237,7 +238,7 @@ class Nick:
             try:
                 data = await fetch(ctx.session,
                                         "http://rule34.xxx/index.php?page=dapi&s=post&q=index&id={}".format(page_id),
-                                        body='text')
+                                        return_type='text')
             except:
                 return await ctx.send('There was an error with your request. Please try again.')
 
