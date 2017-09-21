@@ -14,13 +14,13 @@ from bs4 import BeautifulSoup
 from utils.checks import nsfw
 from utils.connectors import fetch
 
-
 class Nick:
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(aliases=["element"])
     async def atom(self, ctx, element):
+        """Displays information for a given atom"""
         try:
             html = await fetch(ctx.session, f"http://www.chemicalelements.com/elements/{element.lower()}.html", timeout=15,
                                return_type='text')
@@ -60,10 +60,12 @@ class Nick:
 
     @commands.command(aliases=["gh"])
     async def github(self, ctx):
+        """AssBot's Github Link"""
         await ctx.send("https://github.com/dpy-blobs/AssBot")
 
     @commands.command()
     async def invite(self, ctx):
+        """AssBot's invite link"""
         await ctx.send("https://discordapp.com/oauth2/authorize?client_id=254615108519460865&scope=bot")
 
     @commands.command(aliases=["8ball"])
