@@ -10,21 +10,117 @@ from discord.ext import commands
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+from bs4 import BeautifulSoup
 from utils.checks import nsfw
-from cogs.myst import myst_fetch
-
+from utils.connectors import fetch
 
 class Nick:
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(aliases=["element"])
+    async def atom(self, ctx, element):
+        """Displays information for a given atom"""
+        try:
+            html = await fetch(ctx.session, f"http://www.chemicalelements.com/elements/{element.lower()}.html", timeout=15,
+                               return_type='text')
+        except:
+            await ctx.send(f"Could not find and element with the symbol \"{element.upper()}\"")
+            return
+        soup = BeautifulSoup(html, "html.parser")
+
+        text = soup.get_text()
+
+        element_name = text.split('Name: ')[1].split('\n')[0]
+        element_symbol = text.split('Symbol: ')[1].split('\n')[0]
+        atomic_number = text.split('Atomic Number: ')[1].split('\n')[0]
+        atomic_mass = text.split('Atomic Mass: ')[1].split('\n')[0]
+        neutrons = text.split('Number of Neutrons: ')[1].split('\n')[0]
+        shells = text.split('Number of Energy Levels: ')[1].split('\n')[0]
+        family = text.split('Classification: ')[1].split('\n')[0]
+        color = text.split('Color: ')[1].split('\n')[0]
+        uses = text.split('Uses: ')[1].split('\n')[0]
+        discovery_year = text.split('Date of Discovery: ')[1].split('\n')[0]
+        discoverer = text.split('Discoverer: ')[1].split('\n')[0]
+
+        embed = discord.Embed(title=element_name, colour=0x33cc82, type="rich")
+        embed.add_field(name='Name', value=element_name)
+        embed.add_field(name='Symbol', value=element_symbol)
+        embed.add_field(name='Atomic Number', value=atomic_number)
+        embed.add_field(name='Atomic Mass', value=atomic_mass)
+        embed.add_field(name='Neutrons', value=neutrons)
+        embed.add_field(name='Shells', value=shells)
+        embed.add_field(name='Family', value=family)
+        embed.add_field(name='Color', value=color)
+        embed.add_field(name='Uses', value=uses)
+        embed.add_field(name='Year of Discovery', value=discovery_year)
+        embed.add_field(name='Discoverer', value=discoverer)
+
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["gh"])
+    async def github(self, ctx):
+        """AssBot's Github Link"""
+        await ctx.send("https://github.com/dpy-blobs/AssBot")
+
+    @commands.command()
+    async def invite(self, ctx):
+        """AssBot's invite link"""
+        await ctx.send("https://discordapp.com/oauth2/authorize?client_id=254615108519460865&scope=bot")
+
     @commands.command(aliases=["8ball"])
     async def ask(self, ctx, *, question=None):
         '''Ask a question'''
-        responses = ["Maybe", "Probably", "Most likely", "Definitely not", "No way",
-                     "Yeah, sometime soon", "A little bit", "Yes", "No", "Definitely",
-                     "In a few hours", "Sure", "Of course", "Please don't", "Go for it",
-                     "I mean, if you want to, sure", "That's probably a bad idea"]
+        question = question.lower()
+
+        if question.startswith("should"):
+            responses = ("Yes", "No", "Definitely", "Sure", "Of course", "Maybe", 
+                         "Probably" "Definitely not", "No way", "Please don't", 
+                         "Go ahead!", "I mean, if you want to, sure", "Sure, but be careful", 
+                         "That's probably not a good idea")
+        elif question.startswith("where"):
+            fast_food_chains = ("McDonald's", "Wendy's", "Burger King", "A&W", "KFC", "Taco Bell")
+            responses = ("Just over there", "In your closet", "Probably hiding from you",
+                         f"At the nearest {random.choice(fast_food_chains)}",
+                         "Right behind you", "At the store", "Just a few blocks away",
+                         "Nowhere near here")
+        elif question.startswith("when"):
+            time_units = ("years", "months", "days", "hours", "minutes", "seconds")
+            responses = ("In a few hours", "Sometime this month", "When pigs fly",
+                         "Not anythime soon, that's for sure", "By the end of the week",
+                         "Let's hope that never happens", "I am genuinely unsure",
+                         "Soon", "No idea, but be sure to tell me when it does",
+                         "In a dog's age", "I don't know, but hopefully it's in my lifetime",
+                         f"In {random.randint(1, 101)} {random.choice(time_units)}")
+        elif question.startswith("who"):
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-celebrities?a", timeout=15, return_type='text')
+            soup = BeautifulSoup(html, "html.parser")
+            tags = soup.find_all(class_="crux")
+            celebrities = []
+            for tag in tags:
+                celebrities.append(tag.text)
+            responses = celebrities
+        elif question.startswith(("what movie should", "what film should")):
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-movies?a", timeout=15, return_type='text')
+            soup = BeautifulSoup(html, "html.parser")
+            tags = soup.find_all(class_="support")
+            movies = []
+            for tag in tags:
+                movies.append(tag.text)
+            responses = movies
+        elif question.startswith(("what game should", "what video game should", "what videogame should")):
+            html = await fetch(ctx.session, "https://www.randomlists.com/random-video-games?a", timeout=15, return_type='text')
+            soup = BeautifulSoup(html, "html.parser")
+            tags = soup.find_all(class_="support")
+            games = []
+            for tag in tags:
+                games.append(tag.text)
+            responses = games
+        else:
+            responses = ("Yes", "No", "Definitely", "Sure", "Of course", "Maybe", 
+                         "Probably", "Most likely", "Definitely not", "No way",
+                         "I hope not", "Better be", "I don't think so")
+
         if question is None:
             await ctx.send("You forgot to ask a question")
         else:
@@ -48,12 +144,15 @@ class Nick:
 
                 msg = await ctx.send(embed=embed)
 
+                def check(reaction, user):
+                    return (user.id != self.bot.user.id
+                            and reaction.message.id == msg.id)
+
                 await msg.add_reaction("🔄")
                 await msg.add_reaction("🚫")
 
                 try:
-                    reaction, user = await self.bot.wait_for("reaction_add",
-                                                             check=lambda r, u: u.id != self.bot.user.id, timeout=60)
+                    reaction, user = await self.bot.wait_for("reaction_add", check=check, timeout=60)
                 except asyncio.TimeoutError:
                     return await msg.delete()
 
@@ -76,15 +175,17 @@ class Nick:
                     embed.set_footer(text="({}/{})".format(index + 1, str(len(r34_posts))))
 
                     msg = await ctx.send(embed=embed)
+                    # Thanks for the repetition Nick.
+                    def check(reaction, user):
+                        return (user.id != self.bot.user.id
+                                and reaction.message.id == msg.id)
 
                     await msg.add_reaction("◀")
                     await msg.add_reaction("▶")
                     await msg.add_reaction("🚫")
 
                     try:
-                        reaction, user = await self.bot.wait_for("reaction_add",
-                                                                 check=lambda r, u: u.id != self.bot.user.id,
-                                                                 timeout=60)
+                        reaction, user = await self.bot.wait_for("reaction_add", check=check, timeout=60)
                     except asyncio.TimeoutError:
                         return await msg.delete()
 
@@ -119,7 +220,7 @@ class Nick:
         base = "http://rule34.xxx/index.php?page=dapi&s=post&q=index&tags={}".format("+".join(tags))
 
         try:
-            data = await myst_fetch(ctx.session, base, 15, body='text')
+            data = await fetch(ctx.session, base, timeout=15, return_type='text')
         except:
             return await ctx.send('There was an error with your request. Please try again later.')
 
@@ -134,13 +235,12 @@ class Nick:
         return sorted_posts
 
     async def r34_random(self, ctx):
-
         while True:
             page_id = str(random.randint(0, 2372222))
             try:
-                data = await myst_fetch(ctx.session,
+                data = await fetch(ctx.session,
                                         "http://rule34.xxx/index.php?page=dapi&s=post&q=index&id={}".format(page_id),
-                                        body='text')
+                                        return_type='text')
             except:
                 return await ctx.send('There was an error with your request. Please try again.')
 

@@ -1,6 +1,8 @@
 import os
 import asyncio
 import datetime
+import pprint
+import json
 from pathlib import Path
 from itertools import cycle
 
@@ -72,7 +74,7 @@ class Bot(commands.Bot):
         guild = self.blob_guild
         for member in cycle(self.contrib_role.members):
             await guild.me.edit(nick=member.name.upper())
-            await asyncio.sleep(15)
+            await asyncio.sleep(90)
 
     @commands.command(name='load')
     async def _load(self, ctx, *, module: str):
@@ -113,6 +115,20 @@ class Bot(commands.Bot):
             await ctx.send(f'{type(e).__name__}: {e}')
         else:
             await ctx.send('\N{OK HAND SIGN}')
+
+    async def create_gist(self, description, files, pretty=False):
+        """
+        description (str) -- Gist description
+        files (list[tuple]) -- list of file tuples: (filename, file_contents)
+        pretty (bool) -- pretty print the contents
+        """
+        if pretty:
+            file_dict = {f[0]: {"content": pprint.pformat(f[1])} for f in files}
+        else:
+            file_dict = {f[0]: {"content": f[1]} for f in files}
+        payload = {"description": description, "public": True, "files": file_dict}
+        async with self.session.post("https://api.github.com/gists", data=json.dumps(payload)) as resp:
+            return (await resp.json())["html_url"]
 
 
 if __name__ == '__main__':
