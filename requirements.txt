@@ -5,4 +5,4 @@ psutil
 discord.py>=1.0.0.a1340
 youtube_dl
 beautifulsoup4
-
+python_dateutil
