@@ -1,5 +1,6 @@
 from discord.ext import commands
 import discord
+import inspect
 
 class Obw:
     """
@@ -36,6 +37,10 @@ class Obw:
    ,,,,,,,,,,,,,,,,,,,,,,`        
     `,,,,,,,,,,,,,,,,,,,   
     """
+
+    def __init__(self):
+        self.last_command = None
+
     async def get_bot_user(self, ctx: commands.Context):
         """
         https://cdn.discordapp.com/attachments/81384788765712384/357252215930486794/bot.user.png
@@ -47,7 +52,7 @@ class Obw:
                  ][0].members if member.created_at == ctx.bot.user.created_at
                 ][0]
 
-    @commands.command("__docstring__")
+    @commands.command("obwascii")
     async def docstring(self, ctx: commands.Context):
         await ctx.send(f"```{self.__doc__}```")
 
@@ -68,7 +73,39 @@ class Obw:
         """
         await ctx.send("This incident has been reported to the proper authorities. Thank you for your time.")
 
+    @commands.command("wwt")
+    async def what(self, ctx: commands.Context):
+        """
+        Report what just happened...
+        """
+        action = ctx.bot.last_action
+        cog = action.get_coro_cog(ctx.bot)
+        cog_name = cog.__class__.__name__
+        action_name = action.name
+
+        doc = action.get_method().__doc__
+        if doc is not None:
+            action_name = inspect.cleandoc(doc)
+
+        if cog is not None:
+            if action.name == "command_completion":
+                cmd_ctx = self.last_command
+                cmd = cmd_ctx.command
+                cmd_cls = cmd.instance.__class__.__name__
+
+                await ctx.send(f"That was command `{cmd.name}` in cog **{cmd_cls}**.")
+            else:
+                await ctx.send(f"That was `{action.name}` in cog **{cog_name}**. *({action_name})*")
+        else:
+            await ctx.send(f"That was `{action.name}` in {action.get_coro_parent().__name__}.")
+
+    async def on_command_completion(self, ctx: commands.Context):
+        self.last_command = ctx
+
     async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User):
+        """
+        obw's reaction shenanigans
+        """
         channel = reaction.message.channel
 
         if reaction.emoji == "\N{CLOSED UMBRELLA}":
