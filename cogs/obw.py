@@ -89,9 +89,13 @@ class Obw:
 
         if cog is not None:
             if action.name == "command_completion":
-                await ctx.send(f"That was command `{self.last_command.command.name}` in cog {cog_name}.")
+                cmd_ctx = self.last_command
+                cmd = cmd_ctx.command
+                cmd_cls = cmd.instance.__class__.__name__
+
+                await ctx.send(f"That was command `{cmd.name}` in cog **{cmd_cls}**.")
             else:
-                await ctx.send(f"That was `{action.name}` in cog {cog_name}. *({action_name})*")
+                await ctx.send(f"That was `{action.name}` in cog **{cog_name}**. *({action_name})*")
         else:
             await ctx.send(f"That was `{action.name}` in {action.get_coro_parent().__name__}.")
 
