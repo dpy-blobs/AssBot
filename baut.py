@@ -10,7 +10,7 @@ import aiohttp
 import discord
 from discord.ext import commands
 
-from utils import time
+from utils import time, data
 
 
 class Context(commands.Context):
@@ -27,6 +27,7 @@ class Bot(commands.Bot):
         super().__init__(command_prefix=get_prefix,
                          game=discord.Game(name="yes"))
 
+        self.last_action = None
         self.session = aiohttp.ClientSession(loop=self.loop)
 
         startup_extensions = [x.stem for x in Path('cogs').glob('*.py')]
@@ -67,6 +68,11 @@ class Bot(commands.Bot):
         if ctx.prefix is not None:
             ctx.command = self.all_commands.get(ctx.invoked_with.lower())
             await self.invoke(ctx)
+
+    async def _run_event(self, coro, event_name, *args, **kwargs):
+        await super()._run_event(coro, event_name, *args, **kwargs)
+        if event_name != "on_message":
+            self.last_action = data.BotAction(coro, event_name, *args, **kwargs)
 
     async def cyc(self):
         await self.wait_until_ready()
