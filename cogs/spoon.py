@@ -68,7 +68,7 @@ class Spoon:
         
         async def on_member_update(self, b, a):
             if b.id == 353535708310536202:
-                if a.status.offline:
+                if a.status is discord.Status.offline:
                     spoon = self.bot.get_user(120636888418615300)
                     e = discord.Embed(title='Botto Offline', colour=0x0fa03f)
                     current = datetime.datetime.utcnow().strftime('%H:%M %d/%m/%Y')
