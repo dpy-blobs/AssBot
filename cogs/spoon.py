@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import datetime
 
 from cogs.error import InvalidChannelCheck, BotPermissionsCheck
 
@@ -64,6 +65,15 @@ class Spoon:
         if amount > 100:
             return ctx.send('Maximum messages is 100')
         await ctx.channel.purge(limit=amount)
+        
+        async def on_member_update(self, b, a):
+        if b.id == 353535708310536202:
+            if a.status.offline:
+                spoon = self.bot.get_user(120636888418615300)
+                e = discord.Embed(title='Botto Offline', colour=0x0fa03f)
+                current = datetime.datetime.utcnow().strftime('%H:%M %d/%m/%Y')
+                e.add_field(name='\uFEFF', value=current)
+                return await spoon.send(embed=e)
 
 
 def setup(bot):
