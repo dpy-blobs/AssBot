@@ -55,6 +55,7 @@ class NCPlayz:
 
     @commands.command(aliases=["guild", "guildinfo", "serverinfo"])
     async def server(self, ctx):
+        """Displays Server Info"""
         if ctx.guild.emojis:
             emotes = ''.join((str(x) for x in ctx.guild.emojis))
         server_embed = discord.Embed(
@@ -93,9 +94,12 @@ class NCPlayz:
             name="Server Members:",
             value=str(ctx.guild.member_count)
         )
+        roles_list = [r.mention.replace(f'<@&{ctx.guild.id}>', '@everyone') for r in
+                      reversed(sorted(ctx.guild.roles, key=lambda role: role.position))]
+        roles = ', '.join(roles_list)
         server_embed.add_field(
             name="Roles",
-            value=', '.join([r.name for r in sorted(ctx.guild.roles, key=lambda r: -r.position)])
+            value=roles
         )
         server_embed.set_thumbnail(url=ctx.guild.icon_url)
         server_embed.set_footer(text=f"""The {ctx.guild.name} Server Information | Requested by: 
