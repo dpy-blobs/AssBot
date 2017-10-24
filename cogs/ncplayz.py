@@ -17,23 +17,24 @@ class NCPlayz:
         )
         userinfo_embed.add_field(
             name="User:",
-            value={member}
+            value=str(member)
         )
-        userinfo_embed.add_field(
-            name="Nickname:",
-            value={member.display_name}
-        )
+        if member.display_name != member.name:
+            userinfo_embed.add_field(
+                name="Nickname:",
+                value=member.display_name
+            )
         userinfo_embed.add_field(
             name="Status:",
-            value=f"{str(member.status).title()}"
+            value=str(member.status).title()
         )
         userinfo_embed.add_field(
             name="Playing:",
-            value={member.game}
+            value=str(member.game)
         )
         userinfo_embed.add_field(
             name="ID:",
-            value={member.id}
+            value=str(member.id)
         )
         userinfo_embed.add_field(
             name="Account Created At:",
@@ -45,7 +46,7 @@ class NCPlayz:
         )
         userinfo_embed.add_field(
             name="Roles:",
-            value=f"{', '.join([r.name for r in sorted(member.roles, key=lambda r: -r.position)])}"
+            value=', '.join([r.name for r in sorted(member.roles, key=lambda r: -r.position)])
         )
         userinfo_embed.set_thumbnail(url=ctx.message.author.avatar_url)
         userinfo_embed.set_footer(text=f"""{member}'s Profile | Requested by: 
@@ -61,7 +62,7 @@ class NCPlayz:
         )
         server_embed.add_field(
             name="Server ID:",
-            value={ctx.guild.id}
+            value=str(ctx.guild.id)
         )
         text_count = len(ctx.guild.text_channels)
         voice_count = len(ctx.guild.voice_channels)
@@ -74,11 +75,11 @@ class NCPlayz:
         )
         server_embed.add_field(
             name="Owner:",
-            value=f"{ctx.guild.owner.mention}"
+            value=ctx.guild.owner.mention
         )
         server_embed.add_field(
             name="Region:",
-            value={ctx.guild.region}
+            value=ctx.guild.region
         )
         server_embed.add_field(
             name="Created:",
@@ -90,7 +91,7 @@ class NCPlayz:
         )
         server_embed.add_field(
             name="Server Members:",
-            value={ctx.guild.member_count}
+            value=str(ctx.guild.member_count)
         )
         server_embed.add_field(
             name="Roles",
