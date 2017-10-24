@@ -5,56 +5,101 @@ class NCPlayz:
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command(aliases = ["id"])
-    async def ID(self, ctx):
-        """Get the ID of a channel, user, role, or the server."""
-        if ctx.invoked_subcommand is None:
-            await ctx.send('Invalid Type! {0.subcommand_passed} is not a valid command!'.format(ctx))
+    @commands.command(aliases=["user_info"])
+    async def userinfo(self, ctx, member: discord.Member = None):
+        """Shows a profile. Defaults to you."""
+        if member is None:
+            member = ctx.message.author
 
-    @ID.command()
-    async def channel(self, ctx, *, channel: discord.TextChannel = None):
-        """Fetches the ID of a specified channel"""
-        channel = channel or ctx.channel
-        msg = "The id of the channel `{0}` is `{0.id}".format(channel)
-        await ctx.send(msg)
-        
-    @channel.error
-    async def error_channel(self, ctx):
-        if isinstance(exception, commands.BadArgument):
-            await ctx.send("Invalid Channel ID! Make sure it is case sensitive and is spelt correctly.")
-            
-    @ID.command()
-    async def role(self, ctx, *, role: discord.Role):
-        """Fetches the ID of a specified role"""
-        if role:
-             msg = "The id of the role `{0}` is `{0.id}".format(role)
-        await ctx.send(msg)
-        
-    @role.error
-    async def error_role(self, ctx):
-        if isinstance(exception, commands.BadArgument):
-            await ctx.send("Invalid Role ID! Make sure it is case sensitive and is spelt correctly.")
-    
-    @ID.command()
-    async def member(self, ctx, *, member: discord.Member = None):
-        """Fetches the ID of a specified member/user."""
-        member = member or ctx.author
-        if member:
-            msg = "The id of the member `{0.name}` is `{0.id}".format(member)
-        await ctx.send(msg)
-      
+        userinfo_embed = discord.Embed(
+            title=f"{member.name}'s Profile",
+            color=member.color
+        )
+        userinfo_embed.add_field(
+            name="User:",
+            value=f"{member}"
+        )
+        userinfo_embed.add_field(
+            name="Nickname:",
+            value=f"{member.display_name}"
+        )
+        userinfo_embed.add_field(
+            name="Status:",
+            value=f"{str(member.status).title()}"
+        )
+        userinfo_embed.add_field(
+            name="Playing:",
+            value=f"{member.game}"
+        )
+        userinfo_embed.add_field(
+            name="ID:",
+            value=f"{member.id}"
+        )
+        userinfo_embed.add_field(
+            name="Account Created At:",
+            value=f"{member.created_at} UTC"
+        )
+        userinfo_embed.add_field(
+            name="Joined Guild At:",
+            value=f"{member.joined_at} UTC"
+        )
+        userinfo_embed.add_field(
+            name="Roles:",
+            value=f"{', '.join([r.name for r in sorted(member.roles, key=lambda r: -r.position)])}"
+        )
+        userinfo_embed.set_thumbnail(url=ctx.message.author.avatar_url)
+        userinfo_embed.set_footer(text=f"""{member}'s Profile | Requested by: 
+        {ctx.message.author}""", icon_url=ctx.message.author.avatar_url)
+        await ctx.send(embed=userinfo_embed)
 
-    @member.error
-    async def error_member(self, ctx):
-        if isinstance(exception, commands.BadArgument):
-            await ctx.send("Invalid Member ID! Make sure it is case sensitive and is spelt correctly.")
-            
-    @commands.guild_only()            
-    @ID.command()
+    @commands.command(aliases=["guild", "guildinfo", "serverinfo"])
     async def server(self, ctx):
-        """Fetches the ID of the server """
-        msg = "The id of the server `{0}` is `{0.id}".format(ctx.guild)
-        await ctx.send(msg)
+        if ctx.guild.emojis:
+            emotes = ''.join((str(x) for x in ctx.guild.emojis))
+        server_embed = discord.Embed(
+            title=f"The {ctx.guild.name} Server"
+        )
+        server_embed.add_field(
+            name="Server ID:",
+            value=f"{ctx.guild.id}"
+        )
+        text_count = len(ctx.guild.text_channels)
+        voice_count = len(ctx.guild.voice_channels)
+        text_hid = sum(
+            1 for c in ctx.guild.channels
+            if c.overwrites_for(ctx.guild.default_role).read_messages is False)
+        server_embed.add_field(
+            name="Channels",
+            value=f"{text_count} Text ({text_hid}) Hidden / {voice_count} Voice"
+        )
+        server_embed.add_field(
+            name="Owner:",
+            value=f"{ctx.guild.owner.mention}"
+        )
+        server_embed.add_field(
+            name="Region:",
+            value=f"{ctx.guild.region}"
+        )
+        server_embed.add_field(
+            name="Created:",
+            value=f"{ctx.guild.created_at} UTC"
+        )
+        server_embed.add_field(
+            name="Emotes:",
+            value=f"{emotes}"
+        )
+        server_embed.add_field(
+            name="Server Members:",
+            value=f"{ctx.guild.member_count}"
+        )
+        server_embed.add_field(
+            name="Roles",
+            value=f"""{', '.join([r.name for r in sorted(ctx.guild.roles, key=lambda r: -r.position)])}"""
+        )
+        server_embed.set_thumbnail(url=ctx.guild.icon_url)
+        server_embed.set_footer(text=f"""The {ctx.guild.name} Server Information | Requested by: 
+        {ctx.message.author}""", icon_url=ctx.message.author.avatar_url)
+        await ctx.send(embed=server_embed)
 
 def setup(bot):
     bot.add_cog(NCPlayz(bot))
