@@ -17,11 +17,11 @@ class NCPlayz:
         )
         userinfo_embed.add_field(
             name="User:",
-            value=f"{member}"
+            value={member}
         )
         userinfo_embed.add_field(
             name="Nickname:",
-            value=f"{member.display_name}"
+            value={member.display_name}
         )
         userinfo_embed.add_field(
             name="Status:",
@@ -29,11 +29,11 @@ class NCPlayz:
         )
         userinfo_embed.add_field(
             name="Playing:",
-            value=f"{member.game}"
+            value={member.game}
         )
         userinfo_embed.add_field(
             name="ID:",
-            value=f"{member.id}"
+            value={member.id}
         )
         userinfo_embed.add_field(
             name="Account Created At:",
@@ -61,7 +61,7 @@ class NCPlayz:
         )
         server_embed.add_field(
             name="Server ID:",
-            value=f"{ctx.guild.id}"
+            value={ctx.guild.id}
         )
         text_count = len(ctx.guild.text_channels)
         voice_count = len(ctx.guild.voice_channels)
@@ -78,7 +78,7 @@ class NCPlayz:
         )
         server_embed.add_field(
             name="Region:",
-            value=f"{ctx.guild.region}"
+            value={ctx.guild.region}
         )
         server_embed.add_field(
             name="Created:",
@@ -90,11 +90,11 @@ class NCPlayz:
         )
         server_embed.add_field(
             name="Server Members:",
-            value=f"{ctx.guild.member_count}"
+            value={ctx.guild.member_count}
         )
         server_embed.add_field(
             name="Roles",
-            value=f"""{', '.join([r.name for r in sorted(ctx.guild.roles, key=lambda r: -r.position)])}"""
+            value=', '.join([r.name for r in sorted(ctx.guild.roles, key=lambda r: -r.position)])
         )
         server_embed.set_thumbnail(url=ctx.guild.icon_url)
         server_embed.set_footer(text=f"""The {ctx.guild.name} Server Information | Requested by: 
