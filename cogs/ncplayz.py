@@ -48,9 +48,9 @@ class NCPlayz:
             name="Roles:",
             value=', '.join([r.name for r in sorted(member.roles, key=lambda r: -r.position)])
         )
-        userinfo_embed.set_thumbnail(url=ctx.message.author.avatar_url)
+        userinfo_embed.set_thumbnail(url=member.avatar_url)
         userinfo_embed.set_footer(text=f"""{member}'s Profile | Requested by: 
-        {ctx.message.author}""", icon_url=ctx.message.author.avatar_url)
+        {ctx.author}""", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=userinfo_embed)
 
     @commands.command(aliases=["guild", "guildinfo", "serverinfo"])
@@ -103,7 +103,7 @@ class NCPlayz:
         )
         server_embed.set_thumbnail(url=ctx.guild.icon_url)
         server_embed.set_footer(text=f"""The {ctx.guild.name} Server Information | Requested by: 
-        {ctx.message.author}""", icon_url=ctx.message.author.avatar_url)
+        {ctx.author}""", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=server_embed)
 
 def setup(bot):
