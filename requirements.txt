@@ -2,7 +2,6 @@ aiohttp>=2.0.6
 git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py[voice]
 Pillow>=4.0.x
 psutil
-discord.py>=1.0.0.a1340
 youtube_dl
 beautifulsoup4
 python_dateutil
