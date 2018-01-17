@@ -153,7 +153,10 @@ class Ikusaba:
     @commands.command()
     async def ship(self, ctx, user1: discord.Member, user2: discord.Member=None):
         """Ships two users together, and scores accordingly.
-        Myst was here <3"""
+        Myst was here <3.
+
+        Also Myst is mine pls no touching kthx. <3
+        """
         if user2 is None:
             user1, user2 = ctx.author, user1
 
