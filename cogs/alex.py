@@ -1,6 +1,6 @@
-from discord.ext import commands
 import discord
 import humanize
+from discord.ext import commands
 
 
 class Alex:
@@ -9,16 +9,28 @@ class Alex:
         self.bot = bot
 
     @commands.command()
-    async def quote(self, ctx, msg:int, channel: discord.TextChannel=None):
-        """Quotes a message"""
+    async def quote(self, ctx, msg, channel: discord.TextChannel=None):
+        """
+        Quotes a message.
+        msg can be message ID or the output of shift clicking the 'copy id' button in the UI.
+        """
+        if '-' in msg:
+            try:
+                channel, msg = [int(i) for i in msg.split('-')]
+                channel = self.bot.get_channel(channel)
+            except ValueError or discord.errors.NotFound:
+                raise commands.BadArgument("your input was not a message id")
         try:
-            if channel is not None:
-                msg = await channel.get_message(msg)
-            else:
+            if channel is None:
                 msg = await ctx.channel.get_message(msg)
-        except discord.errors.NotFound:
-            await ctx.send("cant find that message. \N{SLIGHTLY FROWNING FACE}")
+            else:
+                msg = await channel.get_message(msg)
+        except (discord.errors.NotFound, discord.errors.HTTPException):
+            return await ctx.send("cant find that message. \N{SLIGHTLY FROWNING FACE}")
         assert isinstance(msg, discord.Message)
+
+        if channel is not None and channel.nsfw and not ctx.channel.nsfw:
+            return await ctx.send("Cant send message from NSFW channel in SFW channel")
 
         ret = discord.Embed(color=discord.Color.blurple())
 
@@ -49,6 +61,25 @@ class Alex:
         ret.set_footer(text=f"Quoted message is {age} old, from ")
 
         await ctx.send(embed=ret)
+
+    @commands.command()
+    async def difference(self, ctx, object_one: int, object_two: int=None):
+        """
+        compares the creation of two discord IDs.
+        interprets a missing second arg as the current ID.
+        """
+        one = discord.utils.snowflake_time(object_one)
+        if object_two is None:
+            object_two = ctx.message.id
+        two = discord.utils.snowflake_time(object_two)
+        if one > two:
+            diff = two - one
+        else:
+            diff = one - two
+        diff = humanize.naturaldelta(diff)
+        one = humanize.naturaldate(one)
+        two = humanize.naturaldate(two)
+        await ctx.send(f'time difference from {one} to {two} is {diff}.')
 
 
 def setup(bot):
